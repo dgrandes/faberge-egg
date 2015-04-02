@@ -1,0 +1,45 @@
+unit States;
+
+interface
+
+uses SysUtils, math, Customers, Typez;
+
+type
+    state=Class
+
+    private
+     pcu_pos : customer;
+     pdems : intarray;
+     pcu_cap : integer;
+
+     published
+     constructor Create(pcu_pos:customer; cu_cap: integer);
+     property cu_pos : customer read pcu_pos write pcu_pos;
+     property dems : intarray read pdems write pdems;
+     property cu_cap : integer read pcu_cap write pcu_cap;
+
+    End;
+
+    statearray = array of state;
+
+implementation
+
+constructor state.Create(pcu_pos:customer; cu_cap: integer);
+var
+i:integer;
+pdems: intarray;
+begin
+  self.cu_pos := pcu_pos;
+
+  setlength(pdems,n);
+  pdems[0]:=0;
+  for i := 1 to n - 1 do
+  begin
+     pdems[i]:=-8;
+  end;
+
+  self.dems := pdems;
+
+  self.cu_cap := cu_cap;
+end;
+end.

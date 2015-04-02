@@ -1,0 +1,27 @@
+unit Vehicles;
+
+interface
+
+type
+vehicle = class
+
+private
+pcapa:integer;
+pID:integer;
+
+  published
+    property capa:integer read pcapa write pcapa;
+    property ID:integer read pID write pID;
+    constructor Create(ID:integer; capa : integer);
+
+ end;
+
+implementation
+
+constructor Vehicle.Create(ID: integer ; capa: Integer);
+begin
+    self.ID := ID;
+    self.capa:= capa;
+end;
+
+end.

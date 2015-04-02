@@ -1,0 +1,30 @@
+unit Demand;
+
+interface
+
+type
+   Customer = Class
+
+     private
+     pdmax : Integer;
+     pdmin : Integer;
+     pprob : real;
+
+     published
+     constructor Create(pdmax:integer; pdmin : integer);
+     property dmax : integer read pdmax write pdmax;
+     property dmin : integer read pdmin write pdmin;
+     property prob : real read pprob write pprob;
+
+
+end;
+   implementation
+   constructor Customer.Create(pID: Integer; pxcoor: Double; pycoor: Double; pdem: Integer);
+   begin
+          self.ID := pID;
+          self.xcoor := pxcoor;
+          self.ycoor := pycoor;
+          self.dem := pdem;
+   end;
+end.
+

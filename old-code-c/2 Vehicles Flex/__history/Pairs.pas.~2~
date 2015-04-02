@@ -1,0 +1,19 @@
+unit Pairs;
+
+interface
+
+uses
+  Sysutils, Math;
+
+  type
+  Pair = Class
+
+  End;
+
+var
+gamma: integer;
+delta:real;
+
+implementation
+
+end.

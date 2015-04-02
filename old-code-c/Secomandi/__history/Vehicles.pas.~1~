@@ -1,0 +1,23 @@
+unit Vehicles;
+
+interface
+
+type
+vehicle = class
+
+  published
+    capa:integer;
+    ID:integer;
+    constructor Create(ID:integer; capa : integer);
+
+ end;
+
+implementation
+
+constructor Vehicle.Create(ID: integer ; capa: Integer);
+begin
+    self.ID := ID;
+    self.capa:= capa;
+end;
+
+end.

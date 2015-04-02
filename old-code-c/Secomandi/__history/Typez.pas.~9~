@@ -1,0 +1,16 @@
+unit Typez;
+
+interface
+
+uses
+  SysUtils, Classes, Customers, Demands, states, Vehicles;
+
+type
+        CustArray = array of customer;
+        realarray = array of array of real;
+        intarray = array of integer;
+        statearray = array of state;
+
+implementation
+
+end.

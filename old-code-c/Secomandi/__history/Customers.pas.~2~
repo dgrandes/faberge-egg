@@ -1,0 +1,31 @@
+unit Customers;
+
+interface
+
+type
+   Customer = Class
+
+     private
+     pID : Integer;
+     pxcoor : real;
+     pycoor : real;
+     pdem : Integer;
+
+     published
+     constructor Create(pID:integer; pxcoor, pycoor :real; pdem:integer);
+     property ID : integer read pID write pID;
+     property xcoor : real read pxcoor write pxcoor;
+     property ycoor : real read pycoor write pycoor;
+     property dem : integer read pdem write pdem;
+
+                       
+end;
+   implementation
+   constructor Customer.Create(pID: Integer; pxcoor: Double; pycoor: Double; pdem: Integer);
+   begin
+          self.ID := pID;
+          self.xcoor := pxcoor;
+          self.ycoor := pycoor;
+          self.dem := pdem;
+   end;
+end.

@@ -1,0 +1,14 @@
+unit Flex;
+
+interface
+
+uses
+  Sysutils, Math;
+
+var
+gamma: integer;
+delta:real;
+
+implementation
+
+end.
