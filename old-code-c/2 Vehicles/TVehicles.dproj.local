@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject>
-	<Transactions>
-    <Transaction>2012/05/09 12:50:52.889.dproj,C:\Users\Sakurita\Documents\RAD Studio\Projects\Project1.dproj=C:\Users\Sakurita\Documents\RAD Studio\Projects\2 Vehicles\Project1.dproj</Transaction>
-    <Transaction>2012/05/09 12:51:28.060.dproj,C:\Users\Sakurita\Documents\RAD Studio\Projects\2 Vehicles\Project1.dproj=C:\Users\Sakurita\Documents\RAD Studio\Projects\2 Vehicles\MVehicles.dproj</Transaction>
-    <Transaction>2012/05/09 13:26:32.956.pas,C:\Users\Sakurita\Documents\RAD Studio\Projects\2 Vehicles\Unit1.pas=C:\Users\Sakurita\Documents\RAD Studio\Projects\2 Vehicles\TwoVehicles.pas</Transaction>
-    <Transaction>2012/05/16 14:50:53.173.dproj,C:\Users\Sakurita\Documents\RAD Studio\Projects\2 Vehicles\MVehicles.dproj=C:\Users\Sakurita\Documents\RAD Studio\Projects\2 Vehicles\TVehicles.dproj</Transaction>
-  </Transactions>
-</BorlandProject>

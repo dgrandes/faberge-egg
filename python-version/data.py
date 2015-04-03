@@ -17,7 +17,7 @@ def parseDemand(demandType):
     return demand
 
 
-def parseProblemInstances(input):
+def parseCustomerSets(input):
     
     x_coords = []
     y_coords = []
@@ -41,12 +41,12 @@ def parseProblemInstances(input):
     for d in demand_type:
         d[0] = None
 
-    problems = []
+    customerSets = []
     for p in xrange(len(x_coords)):
-        problem_instance = []
+        customers = []
         for j in xrange(len(x_coords[p])):
             c = Customer(j, x_coords[p][j],y_coords[p][j],parseDemand(demand_type[p][j]))
-            problem_instance.append(c)
-        problems.append(problem_instance)
+            customers.append(c)
+        customerSets.append(customers)
 
-    return problems
+    return customerSets
