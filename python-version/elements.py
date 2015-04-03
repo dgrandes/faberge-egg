@@ -30,6 +30,14 @@ class Trios:
     self.vehicles = vehicles
     self.line = line
 
+class States:
+  def __init__(self, currPos, demands, currCap):
+    self.currPos = currPos
+    self.demands = Demands
+    self.currCap = currCap
+
+
+
 
 
 
