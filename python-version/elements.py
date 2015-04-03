@@ -19,5 +19,20 @@ class Vehicles:
     self.currQ = currQ
     self.currPos = currPos
 
+class Pairs:
+  def __init__(self, ID, vehicles, line):
+    self.ID = ID
+    self.vehicles = vehicles
+    self.line=line
+
+class Trios:
+  def __init__(self, vehicles, line):
+    self.vehicles = vehicles
+    self.line = line
+
+
+
+
+
 
 
