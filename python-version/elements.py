@@ -1,7 +1,11 @@
-from math import atan2
+from math import atan2, pow, sqrt
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 def strArray(array):
-  return str(reduce(lambda x,y: str(x)+"\n"+str(y),array))
+  #return str(reduce(lambda x,y: "\t"+str(x)+"\n"+str(y),array))
+  return pp.pformat(array)
 
 class Customer:
   def __init__(self, ID, xCoor, yCoor, dem):
@@ -12,8 +16,8 @@ class Customer:
     
     self.angle = atan2(self.yCoor, self.xCoor)
 
-  def __str__(self):
-    return "Cust "+str(self.ID) +": ("+str(self.xCoor)+", "+str(self.yCoor)+") angle: "+str(self.angle)+", dem:"+str(self.dem)+""
+  def __repr__(self):
+    return "Customer["+str(self.ID) +"]: ("+str(self.xCoor)+", "+str(self.yCoor)+") angle: "+str(self.angle)+", dem:"+str(self.dem)
 
 class Demand:
   def __init__(self, dmax, dmin):
@@ -22,7 +26,7 @@ class Demand:
     self.num=dmax-dmin+1
     self.exp_dem = (self.dmax + self.dmin) / 2.0
 
-  def __str__(self):
+  def __repr__(self):
     return "["+str(self.dmin) +","+str(self.dmax)+"]"
 
 class Vehicle:
@@ -32,19 +36,19 @@ class Vehicle:
     self.currQ = currQ
     self.currPos = currPos
 
-  def __str__(self):
-    return "Vehicle "+str(self.ID)+"\ncurrQ:["+str(self.currQ)+"], currPos:["+str(self.currPos)+"], Vehicle Customers: \n"+strArray(self.customers)
+  def __repr__(self):
+    return "Vehicle["+str(self.ID)+"]: currQ:["+str(self.currQ)+"], currPos:["+str(self.currPos)+"], Vehicle Customers: \n"+strArray(self.customers)
 
-class Pairs:
-  def __init__(self, ID, vehicles, line):
+#Group of Vehicles that are in pairs or trios thar are part of the larger fleet
+class Flotilla:
+  def __init__(self, ID, vehicles, boundaries):
     self.ID = ID
     self.vehicles = vehicles
-    self.line=line
+    self.boundaries = boundaries
 
-class Trios:
-  def __init__(self, vehicles, line):
-    self.vehicles = vehicles
-    self.line = line
+  def __repr__(self):
+    return str("\nFlotilla["+str(self.ID)+"]: Vehicles:"+strArray(self.vehicles)+"\nBoundaires:"+strArray(self.boundaries))
+
 
 class States:
   def __init__(self, currPos, demands, currCap):
@@ -53,14 +57,24 @@ class States:
     self.currCap = currCap
 
 
+def calculateDistance(customers):
+  distMatrix = [[0 for x in range(len(customers))] for x in range(len(customers))] 
+  for i in xrange(0,len(customers)): 
+    for j in xrange(i,len(customers)):
+        distMatrix[i][j] = sqrt((pow(customers[j].xCoor - customers[i].xCoor, 2) + (pow(customers[j].yCoor - customers[i].yCoor, 2))))
+        distMatrix[j][i] = distMatrix[i][j]
+        
+  return distMatrix
+
 class Problem:
   def __init__(self, customers, depot, Q):
     self.customers = customers
     self.depot = depot
     self.Q = Q
+    self.distanceMatrix = calculateDistance(customers)
 
-  def __str__(self):
-    return str("Quantity: "+str(self.Q)+"\nDepot:"+str(self.depot)+"\nCustomers:\n"+strArray(self.customers))
+  def __repr__(self):
+    return str("Problem Instance: Quantity: "+str(self.Q)+", Depot:"+str(self.depot)+", Customers:"+strArray(self.customers))
 
 
 

@@ -1,5 +1,8 @@
 import os, sys, getopt
 from data import *
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 def parseParameters(argv):
     inputfile = ''
@@ -42,8 +45,7 @@ def generateProblems(customerSets, vehicleQty, expectedDemand, routeFailure):
 
     return problems
 
-def clustering(problem, vehicleQty, expectedDemand):
-    expectedDemandPerVehicle = (expectedDemand*(len(problem.customers)))/(vehicleQty*1.0)
+def distributeCustomersBetweenVehicles(expectedDemandPerVehicle, problem, vehicleQty):
     currDemand = 0
     vehicles = []
     tempCustomers = []
@@ -71,13 +73,50 @@ def clustering(problem, vehicleQty, expectedDemand):
 
     return vehicles
 
+def chunk(l, n):
+    for i in xrange(0, len(l), n):
+        yield l[i:i+n]
+
+def assignFlotillas(vehicles):
+ 
+    vehicleGroups = list(chunk(vehicles, 2))
+    
+    if len(vehicleGroups[-1]) == 1:
+
+        lastVehicle = vehicleGroups.pop()
+        vehicleGroups[-1].extend(lastVehicle)
+
+    boundaries = []
+    for vG in vehicleGroups:
+        subSetBoundaries = []
+        for i in xrange(1, len(vG)):
+            a = vG[i - 1].customers[-1].angle
+            b = vG[i].customers[0].angle
+            c = (a + b)/2.0
+            subSetBoundaries.append(c)
+        boundaries.append(subSetBoundaries)
+
+    ids = xrange(0, len(boundaries))
+
+    flotillas = map(lambda x: Flotilla(x[0],x[1],x[2]), zip(ids, vehicleGroups, boundaries))
+    
+    return flotillas
+    
+
+def clustering(problem, vehicleQty, expectedDemand):
+    expectedDemandPerVehicle = (expectedDemand*(len(problem.customers)))/(vehicleQty*1.0)
+    vehicles = distributeCustomersBetweenVehicles(expectedDemandPerVehicle, problem, vehicleQty)
+
+
+    flotillas = assignFlotillas(vehicles)
+    return flotillas
 
 
 def main(argv):
     
     i, o = parseParameters(argv)
 
-    vehicleQty = 2
+    vehicleQty = 11
     routeFailures = [0.75,1.25,1.75]
     expectedDemand = 3
 
@@ -86,13 +125,13 @@ def main(argv):
     
 
     for problem in problems[0:1]:
-        print "Problem Instance:"
-        print problem
-        vehicles = clustering(problem, vehicleQty, expectedDemand)
-        print "\nVehicles"
-        for v in vehicles:
-            print v
-        print "\n"
+        
+        pp.pprint(problem)
+        flotillas = clustering(problem, vehicleQty, expectedDemand)
+        print "\nFlotillas\n"
+        for f in flotillas:
+            pp.pprint(f)
+        
 
 
 if __name__ == "__main__":
