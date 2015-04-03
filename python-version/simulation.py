@@ -1,4 +1,5 @@
 import os, sys, getopt
+from data import *
 
 def parseParameters(argv):
     inputfile = ''
@@ -28,10 +29,14 @@ def parseParameters(argv):
 def main(argv):
     
     i, o = parseParameters(argv)
-    print "in"
-    print i
-    print "out"
-    print o
+
+    problems = parseProblemInstances(i)
+    
+    for p in problems:
+        print "Problem Instance:"
+        for c in p:
+            print c
+        print "\n"
 
 
 if __name__ == "__main__":
