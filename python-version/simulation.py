@@ -52,6 +52,7 @@ def expectedLength(accumCost, vehicle, route, Q, routeSoFar, d):
     vehicleCopy = copy(vehicle)
     vehicleCopy.currPos = currentNode
     
+    #If the result is in d, we use it instead of generating it again
     if (currentNode.ID,vehicleCopy.currQ) in d:
         results = d[currentNode.ID, vehicleCopy.currQ]
         return results[0], list(results[1])
@@ -63,6 +64,7 @@ def expectedLength(accumCost, vehicle, route, Q, routeSoFar, d):
             
             vehicleCopy.currQ = vehicleCopy.currQ - currentNode.dem.exp_dem
             routeWithDepot = [route[-1],currentNode]+route[:]
+
             withDepotCost, soFarWithDepot = expectedLength(accumCost + distance, 
                 vehicleCopy, routeWithDepot, Q, routeSoFar+[currentNode], d)    
         #We can evaluate both cases now, going to the depot or not
@@ -70,8 +72,10 @@ def expectedLength(accumCost, vehicle, route, Q, routeSoFar, d):
             #We offload the truck!
             vehicleCopy.currQ = vehicleCopy.currQ - currentNode.dem.exp_dem
             routeWithDepot = [route[-1]]+route[:]
+
             withoutDepotCost, soFarWithoutDepot = expectedLength(accumCost + distance,
              vehicleCopy, route, Q, routeSoFar+[currentNode], d)
+
             withDepotCost, soFarWithDepot = expectedLength(accumCost + distance,
              vehicleCopy, routeWithDepot, Q, routeSoFar+[currentNode], d)    
         
@@ -79,17 +83,19 @@ def expectedLength(accumCost, vehicle, route, Q, routeSoFar, d):
     elif currentNode.ID == 0:
 
         vehicleCopy.currQ = min(Q, vehicleCopy.currQ+Q)
+
         withoutDepotCost, soFarWithoutDepot = expectedLength(accumCost + distance,
          vehicleCopy, route, Q, routeSoFar+[currentNode], d)
-        #print "IN DEPOT -> WITHOUT DEPOT COST:"+str(withoutDepotCost)
+        
     minCost = min(withDepotCost, withoutDepotCost)
     if minCost == withoutDepotCost:
         routeSoFar = soFarWithoutDepot
     else:
         routeSoFar = soFarWithDepot
     
-    #Store the end result int eh dictionary for further use
+    #Store the end result in the dictionary for further use
     d[(currentNode.ID, vehicleCopy.currQ)] = (minCost, routeSoFar)
+
     return minCost, routeSoFar
 
 def main(argv):
