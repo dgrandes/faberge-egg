@@ -1,5 +1,5 @@
 from data import *
-
+from math import ceil
 
 #Groups the customers in polar regions and distributes them between the vehicles.
 #It assigns a vehicle only as much customers as the expected demand dictates per vehicle.
@@ -94,7 +94,7 @@ def sortCustomersByNearesNeighbor(vehicle):
 
     return nearestCustomers
 
-def calcRouteCost(route):
+def calcRouteLength(route):
     c = 0
     for i in xrange(0,len(route)-1):
         c = c + dist(route[i], route[i+1])
@@ -104,12 +104,12 @@ def twoOptFunction(route):
     improvement = True
     existing_route = route[:]
     while improvement:
-        best_distance = calcRouteCost(existing_route)
+        best_distance = calcRouteLength(existing_route)
         improvement = False
         for i in xrange(1,len(route) - 2):
             for k in xrange(i+1,len(route) -1):
                 new_route = twoOptSwap(existing_route, i, k)
-                new_distance = calcRouteCost(new_route)
+                new_distance = calcRouteLength(new_route)
                 if (new_distance < best_distance):
                     existing_route = new_route[:]
                     improvement = True
@@ -166,7 +166,7 @@ def generateProblems(customerSets, vehicleQty, expectedDemand, routeFailure):
         customers.pop(0)
 
         #Q is calculated for the entire problem
-        Q = round(expectedDemand*(len(customers))/(vehicleQty*(routeFailure+1)))
+        Q = ceil(expectedDemand*(len(customers))/(vehicleQty*(routeFailure+1)))
          
         #Basic data is setup for the problem
         problem = Problem(customers, depot, Q)
@@ -181,7 +181,7 @@ def generateProblems(customerSets, vehicleQty, expectedDemand, routeFailure):
 
 def setup(inputFile):
 
-    vehicleQty = 11
+    vehicleQty = 2
     routeFailures = [0.75,1.25,1.75]
     expectedDemand = 3
 

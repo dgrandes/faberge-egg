@@ -25,6 +25,7 @@ class Demand:
     self.dmin= float(dmin)
     self.num=dmax-dmin+1
     self.exp_dem = (self.dmax + self.dmin) / 2.0
+    self.currDemand = self.exp_dem
 
   def __repr__(self):
     return "["+str(self.dmin) +","+str(self.dmax)+"]"
