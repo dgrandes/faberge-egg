@@ -1,4 +1,4 @@
-from math import atan2, pow, sqrt
+from math import atan2, pow, sqrt, hypot
 import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -17,7 +17,7 @@ class Customer:
     self.angle = atan2(self.yCoor, self.xCoor)
 
   def __repr__(self):
-    return "Customer["+str(self.ID) +"]: ("+str(self.xCoor)+", "+str(self.yCoor)+") angle: "+str(self.angle)+", dem:"+str(self.dem)
+    return "(Cust["+str(self.ID) +"]: ("+str(self.xCoor)+","+str(self.yCoor)+"), angle: "+str(self.angle)+", dem:"+str(self.dem)+")"
 
 class Demand:
   def __init__(self, dmax, dmin):
@@ -37,7 +37,7 @@ class Vehicle:
     self.currPos = currPos
 
   def __repr__(self):
-    return "Vehicle["+str(self.ID)+"]: currQ:["+str(self.currQ)+"], currPos:["+str(self.currPos)+"], Vehicle Customers: \n"+strArray(self.customers)
+    return "V["+str(self.ID)+"]: Q:"+str(self.currQ)+", Cust:["+str(map(lambda c: c.ID, self.customers))+"]"
 
 #Group of Vehicles that are in pairs or trios thar are part of the larger fleet
 class Flotilla:
@@ -47,7 +47,7 @@ class Flotilla:
     self.boundaries = boundaries
 
   def __repr__(self):
-    return str("\nFlotilla["+str(self.ID)+"]: Vehicles:"+strArray(self.vehicles)+"\nBoundaires:"+strArray(self.boundaries))
+    return str("Flotilla["+str(self.ID)+"]: Vehicles:{"+strArray(self.vehicles)+"}; Boundaires:"+strArray(self.boundaries))+""
 
 
 class States:
@@ -57,13 +57,17 @@ class States:
     self.currCap = currCap
 
 
+def dist(x,y):
+  return hypot(y.xCoor-x.xCoor,y.yCoor-x.yCoor)
+
 def calculateDistance(customers):
   distMatrix = [[0 for x in range(len(customers))] for x in range(len(customers))] 
+
   for i in xrange(0,len(customers)): 
     for j in xrange(i,len(customers)):
-        distMatrix[i][j] = sqrt((pow(customers[j].xCoor - customers[i].xCoor, 2) + (pow(customers[j].yCoor - customers[i].yCoor, 2))))
+        distMatrix[i][j] = dist(customers[i], customers[j])
         distMatrix[j][i] = distMatrix[i][j]
-        
+
   return distMatrix
 
 class Problem:
@@ -71,10 +75,11 @@ class Problem:
     self.customers = customers
     self.depot = depot
     self.Q = Q
-    self.distanceMatrix = calculateDistance(customers)
+    #self.distanceMatrix = calculateDistance(sorted(customers, key=lambda c: c.ID))
+    self.flotillas = []
 
   def __repr__(self):
-    return str("Problem Instance: Quantity: "+str(self.Q)+", Depot:"+str(self.depot)+", Customers:"+strArray(self.customers))
+    return str("Problem Instance: Quantity: "+str(self.Q)+", Flotillas:\n"+strArray(self.flotillas))
 
 
 
