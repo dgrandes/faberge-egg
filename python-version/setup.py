@@ -17,8 +17,7 @@ def distributeCustomersBetweenVehicles(expectedDemandPerVehicle, problem, vehicl
         
         #If demand spills over, then this vehicle is done and we move to the next one
         if postDemand > expectedDemandPerVehicle:
-            
-            vehicles.append(Vehicle(ID,tempCustomers,currDemand,problem.depot))
+            vehicles.append(Vehicle(ID,tempCustomers[:],problem.Q,problem.depot))
             ID = ID + 1
             tempCustomers = [customer]
             currDemand = customer.dem.exp_dem
@@ -28,7 +27,7 @@ def distributeCustomersBetweenVehicles(expectedDemandPerVehicle, problem, vehicl
     
     #If there is spill over and we are one vehicle short we spawn it
     if currDemand > 0 and len(vehicles) < vehicleQty:
-        vehicles.append(Vehicle(ID,tempCustomers,currDemand,problem.depot))
+        vehicles.append(Vehicle(ID,tempCustomers,problem.Q,problem.depot))
     elif len(vehicles) == vehicleQty:
         #We already are maxed out of vehicles, so we just assign the remaining nodes
         lastVehicle = vehicles.pop()
@@ -42,13 +41,12 @@ def chunk(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i+n]
 
-def assignFlotillas(vehicles):
+def assignClusters(vehicles):
     #Create pairs of vehicles
     vehicleGroups = list(chunk(vehicles, 2))
-    
+    print vehicleGroups
     #If its uneven, add it to the last pair and create a trio
-    if len(vehicleGroups[-1]) == 1:
-
+    if len(vehicleGroups[-1]) == 1 and len(vehicleGroups) > 1:
         lastVehicle = vehicleGroups.pop()
         vehicleGroups[-1].extend(lastVehicle)
 
@@ -68,10 +66,10 @@ def assignFlotillas(vehicles):
     #Generate an ID array
     ids = xrange(0, len(boundaries))
 
-    #All three arrays, IDs, Vehicle Groups and Boundaries are zipped together and a Flotilla is born!
-    flotillas = map(lambda x: Flotilla(x[0],x[1],x[2]), zip(ids, vehicleGroups, boundaries))
+    #All three arrays, IDs, Vehicle Groups and Boundaries are zipped together and a Cluster is born!
+    clusters = map(lambda x: Cluster(x[0],x[1],x[2]), zip(ids, vehicleGroups, boundaries))
     
-    return flotillas
+    return clusters
     
 
 # **************************************************************************************
@@ -85,7 +83,7 @@ def sortCustomersByNearesNeighbor(vehicle):
     origin = vehicle.currPos
 
     while remaining:
-        sortedCustomers = sorted(remaining, key=lambda c: dist(origin,c))
+        sortedCustomers = sorted(remaining, key=lambda c: distCustomers(origin,c))
         next = sortedCustomers.pop(0)
         nearestCustomers.append(next)
         i = remaining.index(next)
@@ -97,7 +95,7 @@ def sortCustomersByNearesNeighbor(vehicle):
 def calcRouteLength(route):
     c = 0
     for i in xrange(0,len(route)-1):
-        c = c + dist(route[i], route[i+1])
+        c = c + distCustomers(route[i], route[i+1])
     return c
 
 def twoOptFunction(route):
@@ -136,7 +134,7 @@ def optimizeInitialRoute(vehicle):
     vehicle.customers = twoOpt(vehicle)
 
 #Groups the customers in polar regions ditributed evenly by the amount of vehicles
-#Then it groups them together in flotillas
+#Then it groups them together in Clusters
 def clustering(problem, vehicleQty, expectedDemand):
     #Distribute demand per vehicle
     expectedDemandPerVehicle = (expectedDemand*(len(problem.customers)))/(vehicleQty*1.0)
@@ -145,34 +143,34 @@ def clustering(problem, vehicleQty, expectedDemand):
     vehicles = distributeCustomersBetweenVehicles(expectedDemandPerVehicle, problem, vehicleQty)
 
     #Generate the groups of Vehicles that will work together in pairs or trios
-    flotillas = assignFlotillas(vehicles)
+    clusters = assignClusters(vehicles)
 
     #Optimize the initial route of all vehicles. Add the depot to beginning and end
     #and optimize by nearest neighbor and 2-opt
-    for f in flotillas:
+    for f in clusters:
         for v in f.vehicles:
             optimizeInitialRoute(v)
 
     #Returns the groups of vehicles that will be working close to each other
-    return flotillas
+    return clusters
 
 def generateProblems(customerSets, vehicleQty, expectedDemand, routeFailure):
     
     problems = []
-
+    ID = 0
     for customers in customerSets:
         #Treat the depot differently and remove it from the customer list
         depot = customers[0]
         customers.pop(0)
 
         #Q is calculated for the entire problem
-        Q = ceil(expectedDemand*(len(customers))/(vehicleQty*(routeFailure+1)))
-         
+        Q = round(expectedDemand*(len(customers))/(vehicleQty*(routeFailure+1)))
+        
         #Basic data is setup for the problem
-        problem = Problem(customers, depot, Q)
-
+        problem = Problem(ID, customers, depot, Q)
+        ID = ID + 1
         #Vehicles are distributed according to Demand in a polar groupings
-        problem.flotillas = clustering(problem, vehicleQty, expectedDemand)
+        problem.clusters = clustering(problem, vehicleQty, expectedDemand)
 
         #There are many problems parsed at the same time
         problems.append(problem)
@@ -181,7 +179,7 @@ def generateProblems(customerSets, vehicleQty, expectedDemand, routeFailure):
 
 def setup(inputFile):
 
-    vehicleQty = 2
+    vehicleQty = 1
     routeFailures = [0.75,1.25,1.75]
     expectedDemand = 3
 
@@ -189,14 +187,14 @@ def setup(inputFile):
     problemNumber = None
 
     #Read inputfile and generate customers
-    customerSets = parseCustomerSets(inputFile)
+    customerSets = parseCustomerSets(inputFile)[0:1]
 
     if problemNumber is not None:
         #Reduce the amount of problems to deal with if specified
         customerSets = customerSets[problemNumber:problemNumber+1]    
     
     #Problems are generated with basic paramenters
-    problems = generateProblems(customerSets, vehicleQty, expectedDemand, routeFailures[0])
+    problems = generateProblems(customerSets, vehicleQty, expectedDemand, routeFailures[2])
     
 
     return problems

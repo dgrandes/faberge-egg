@@ -1,8 +1,14 @@
 import os, sys, getopt
 from setup import *
-from copy import *
+from copy import copy as pycopy
 import pprint
 from random import randint
+
+import pylab as pylab
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy as sp
+from math import sin, cos
 
 
 pp = pprint.PrettyPrinter(indent=2)
@@ -33,8 +39,9 @@ def parseParameters(argv):
     return inputfile, outputfile
 
 
-def expectedLength(accumCost, vehicle, route, Q, d):
-
+#Calculates the route expected cost by averaging all possibilities of demand in each node
+def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
+    route = routeGiven[:]
     if len(route) == 0:
         return accumCost
 
@@ -43,10 +50,10 @@ def expectedLength(accumCost, vehicle, route, Q, d):
     withDepotCost = float("inf")
     withoutDepotCost = float("inf")
 
-    distance = dist(vehicle.currPos, currentNode)
+    distance = distCustomers(vehicle.currPos, currentNode)
     
     #If the result is in d, we use it instead of generating it again
-    if (currentNode.ID,vehicle.currQ) in d:
+    if currentNode.ID != 0 and (currentNode.ID,vehicle.currQ) in d:
         result = d[currentNode.ID, vehicle.currQ]
         return result
 
@@ -59,7 +66,7 @@ def expectedLength(accumCost, vehicle, route, Q, d):
     for demand in demGenerator:
         #Necessary in order to prevent the curpos to modify the original vehicle
         
-        vehicleCopy = copy(vehicle)
+        vehicleCopy = pycopy(vehicle)
         vehicleCopy.currPos = currentNode
         #print "Q:"+str(vehicleCopy.currQ)+" Demand "+str(demand)+" in "+str(currentNode)
         routeCopy = route[:]
@@ -72,12 +79,13 @@ def expectedLength(accumCost, vehicle, route, Q, d):
             if vehicleCopy.currQ < demand:
                 
                 vehicleCopy.currQ = vehicleCopy.currQ - demand
-                currentNodeCopy = copy(currentNode)
+                currentNodeCopy = pycopy(currentNode)
+                #We set this node's demand in 0 as we have given him everything and went negative
                 currentNodeCopy.dem.dmin = 0
                 currentNodeCopy.dem.dmax = 0
                 routeWithDepot = [routeCopy[-1],currentNodeCopy]+routeCopy[:]
 
-                withDepotCost = expectedLength(accumCost + distance, 
+                withDepotCost = expectedRouteLength(accumCost + distance, 
                     vehicleCopy, routeWithDepot, Q, d)    
             #We can evaluate both cases now, going to the depot or not
             else:        
@@ -85,10 +93,10 @@ def expectedLength(accumCost, vehicle, route, Q, d):
                 vehicleCopy.currQ = vehicleCopy.currQ - demand
                 routeWithDepot = [routeCopy[-1]]+routeCopy[:]
 
-                withoutDepotCost = expectedLength(accumCost + distance,
+                withoutDepotCost = expectedRouteLength(accumCost + distance,
                  vehicleCopy, routeCopy, Q, d)
 
-                withDepotCost = expectedLength(accumCost + distance,
+                withDepotCost = expectedRouteLength(accumCost + distance,
                  vehicleCopy, routeWithDepot, Q, d)    
             
         #Depot, we just go to the next node after loading the truck
@@ -96,38 +104,40 @@ def expectedLength(accumCost, vehicle, route, Q, d):
 
             vehicleCopy.currQ = min(Q, vehicleCopy.currQ+Q)
 
-            withoutDepotCost = expectedLength(accumCost + distance,
+            withoutDepotCost = expectedRouteLength(accumCost + distance,
              vehicleCopy, routeCopy, Q, d)
             
         minCost = min(withDepotCost, withoutDepotCost)
+
         costs.append(minCost)
-    
-    #print costs
+
     expectedCost = sum(costs)/len(costs)
-    #Store the end result in the dictionary for further use
-    d[(currentNode.ID, vehicle.currQ)] = expectedCost
+    if currentNode.ID != 0:
+        #Store the end result in the dictionary for further use
+        d[(currentNode.ID, vehicle.currQ)] = expectedCost
 
     return expectedCost
 
 #Route is expected to always end at the depot
-def plotRouteWithExpectedDemand(accumCost, vehicle, route, Q, routeSoFar, d):
-
+def plotRouteWithExpectedDemand(accumCost, vehicle, routeGiven, Q, routeSoFar, d):
+    route = routeGiven[:]
     if len(route) == 0:
         return accumCost, routeSoFar
 
+    
     currentNode = route.pop(0)
     
     withDepotCost = float("inf")
     withoutDepotCost = float("inf")
 
-    distance = dist(vehicle.currPos, currentNode)
+    distance = distCustomers(vehicle.currPos, currentNode)
 
     #Necessary in order to prevent the others from modifying the original vehicle
-    vehicleCopy = copy(vehicle)
+    vehicleCopy = pycopy(vehicle)
     vehicleCopy.currPos = currentNode
     
     #If the result is in d, we use it instead of generating it again
-    if (currentNode.ID,vehicleCopy.currQ) in d:
+    if currentNode.ID != 0 and (currentNode.ID,vehicleCopy.currQ) in d:
         results = d[currentNode.ID, vehicleCopy.currQ]
         return results[0], list(results[1])
 
@@ -139,26 +149,27 @@ def plotRouteWithExpectedDemand(accumCost, vehicle, route, Q, routeSoFar, d):
             vehicleCopy.currQ = vehicleCopy.currQ - currentNode.dem.exp_dem
 
             #We have to set this exp_dem in 0, but we don't want the shared node
-            currentNodeCopy = copy(currentNode)
+            currentNodeCopy = pycopy(currentNode)
             currentNodeCopy.dem.exp_dem = 0
 
             #We insert the copy in this route
             routeWithDepot = [route[-1],currentNodeCopy]+route[:]
 
             withDepotCost, soFarWithDepot = plotRouteWithExpectedDemand(accumCost + distance, 
-                vehicleCopy, routeWithDepot, Q, routeSoFar+[currentNodeCopy], d)    
-            
+                vehicleCopy, routeWithDepot, Q, routeSoFar+[currentNodeCopy], d)  
+
         #We can evaluate both cases now, going to the depot or not
         else:        
             #We offload the truck!
             vehicleCopy.currQ = vehicleCopy.currQ - currentNode.dem.exp_dem
-            routeWithDepot = [route[-1]]+route[:]
+            routeWithoutDepot = route[:]
+            routeWithDepot = [route[-1]]+routeWithoutDepot[:]
 
             withoutDepotCost, soFarWithoutDepot = plotRouteWithExpectedDemand(accumCost + distance,
-             vehicleCopy, route, Q, routeSoFar+[currentNode], d)
+             vehicleCopy, routeWithoutDepot, Q, routeSoFar+[currentNode], d)
 
             withDepotCost, soFarWithDepot = plotRouteWithExpectedDemand(accumCost + distance,
-             vehicleCopy, routeWithDepot, Q, routeSoFar+[currentNode], d)    
+             vehicleCopy, routeWithDepot, Q, routeSoFar+[currentNode], d) 
         
     #Depot, we just go to the next node after loading the truck
     elif currentNode.ID == 0:
@@ -176,9 +187,42 @@ def plotRouteWithExpectedDemand(accumCost, vehicle, route, Q, routeSoFar, d):
         routeSoFar = soFarWithDepot
     
     #Store the end result in the dictionary for further use
-    d[(currentNode.ID, vehicleCopy.currQ)] = (minCost, routeSoFar)
+    if currentNode.ID != 0:
+        d[(currentNode.ID, vehicleCopy.currQ)] = (minCost, routeSoFar)
 
     return minCost, routeSoFar
+
+def plotProblems(problems):
+    
+    i = 0
+    
+    for p in problems:
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(8,4), dpi=200)
+    
+        titleString = "Problem-"+str(i)
+        xCoords =  map(lambda c: c.xCoor, p.customers)
+        yCoords =  map(lambda c: c.yCoor, p.customers)
+        boundaryLabel = "boundary"
+        for c in p.clusters:
+            for b in c.boundaries:
+                y = sin(b)
+                x = cos(b)
+                cluster = plt.Line2D([0.0,x],[0.0,y], linewidth=1, linestyle = "--", color="green", label=boundaryLabel)
+                ax.add_line(cluster)
+                boundaryLabel = None
+
+        ax.scatter(xCoords, yCoords, color="blue", label="customers")
+        ax.scatter([p.depot.xCoor],[p.depot.yCoor], color="red", label="depot")
+        
+
+        ax.legend(loc=0)
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_title(titleString)
+        
+        fig.tight_layout()
+        fig.savefig("results/"+titleString+".png")
+        i = i + 1
 
 def main(argv):
     
@@ -191,21 +235,26 @@ def main(argv):
     #Solve them!
     for p in problems[:]:
         pp.pprint(p)
-        for f in p.flotillas[:]:
+        for f in p.clusters[:]:
             for v in f.vehicles[:]:
                 cust = v.customers[:]
-                print "Route"
-                print str(map(lambda c: c.ID, cust))
                 print cust
+                #print "Route"
+                #print str(map(lambda c: c.ID, cust))
                 d = {}
-                expLen = expectedLength(0,v,list(cust), p.Q,{})
-                print "Route Result "+str(expLen)
-
-                routeCost, routePlot = plotRouteWithExpectedDemand(0,v,list(cust), p.Q, [], {})
-                print "Exp Dem Route Cost "+str(routeCost)
+                expLen = expectedRouteLength(0,v,list(cust), p.Q,{})
+                #print d
+                print "Expected Length Result "+str(expLen)
+                d = {}
+                routeCost, routePlot = plotRouteWithExpectedDemand(0,v,list(cust), p.Q, [], d)
+                #pp.pprint(d)
+                print "Plot Route with Expected demand "+str(routeCost)
                 print str(map(lambda c: c.ID, routePlot))
                 
-                print "\n"
+                #print "\n"
+    
+    plotProblems(problems)
+
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
