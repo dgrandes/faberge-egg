@@ -21,8 +21,8 @@ class Customer:
 
 class Demand:
   def __init__(self, dmax, dmin):
-    self.dmax = float(dmax)
-    self.dmin= float(dmin)
+    self.dmax = int(dmax)
+    self.dmin= int(dmin)
     self.num=dmax-dmin+1
     self.exp_dem = (self.dmax + self.dmin) / 2.0
     self.currDemand = self.exp_dem
