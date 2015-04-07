@@ -44,7 +44,7 @@ def chunk(l, n):
 def assignClusters(vehicles):
     #Create pairs of vehicles
     vehicleGroups = list(chunk(vehicles, 2))
-    print vehicleGroups
+    
     #If its uneven, add it to the last pair and create a trio
     if len(vehicleGroups[-1]) == 1 and len(vehicleGroups) > 1:
         lastVehicle = vehicleGroups.pop()
@@ -179,7 +179,7 @@ def generateProblems(customerSets, vehicleQty, expectedDemand, routeFailure):
 
 def setup(inputFile):
 
-    vehicleQty = 1
+    vehicleQty = 8
     routeFailures = [0.75,1.25,1.75]
     expectedDemand = 3
 

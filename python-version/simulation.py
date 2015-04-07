@@ -46,7 +46,6 @@ def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
         return accumCost
 
     currentNode = route.pop(0)
-    
     withDepotCost = float("inf")
     withoutDepotCost = float("inf")
 
@@ -58,6 +57,7 @@ def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
         return result
 
     costs = []
+
     if currentNode.ID != 0:
         demGenerator = xrange(currentNode.dem.dmin, currentNode.dem.dmax+1)
     else:
@@ -66,6 +66,7 @@ def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
     for demand in demGenerator:
         #Necessary in order to prevent the curpos to modify the original vehicle
         
+
         vehicleCopy = pycopy(vehicle)
         vehicleCopy.currPos = currentNode
         #print "Q:"+str(vehicleCopy.currQ)+" Demand "+str(demand)+" in "+str(currentNode)
@@ -80,9 +81,8 @@ def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
                 
                 vehicleCopy.currQ = vehicleCopy.currQ - demand
                 currentNodeCopy = pycopy(currentNode)
+                currentNodeCopy.dem = Demand(0,0)
                 #We set this node's demand in 0 as we have given him everything and went negative
-                currentNodeCopy.dem.dmin = 0
-                currentNodeCopy.dem.dmax = 0
                 routeWithDepot = [routeCopy[-1],currentNodeCopy]+routeCopy[:]
 
                 withDepotCost = expectedRouteLength(accumCost + distance, 
@@ -110,12 +110,11 @@ def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
         minCost = min(withDepotCost, withoutDepotCost)
 
         costs.append(minCost)
-
+    
     expectedCost = sum(costs)/len(costs)
     if currentNode.ID != 0:
         #Store the end result in the dictionary for further use
         d[(currentNode.ID, vehicle.currQ)] = expectedCost
-
     return expectedCost
 
 #Route is expected to always end at the depot
@@ -234,11 +233,11 @@ def main(argv):
 
     #Solve them!
     for p in problems[:]:
-        pp.pprint(p)
+        #pp.pprint(p)
         for f in p.clusters[:]:
             for v in f.vehicles[:]:
                 cust = v.customers[:]
-                print cust
+                #print cust
                 #print "Route"
                 #print str(map(lambda c: c.ID, cust))
                 d = {}
@@ -246,10 +245,10 @@ def main(argv):
                 #print d
                 print "Expected Length Result "+str(expLen)
                 d = {}
-                routeCost, routePlot = plotRouteWithExpectedDemand(0,v,list(cust), p.Q, [], d)
+                #routeCost, routePlot = plotRouteWithExpectedDemand(0,v,list(cust), p.Q, [], d)
                 #pp.pprint(d)
-                print "Plot Route with Expected demand "+str(routeCost)
-                print str(map(lambda c: c.ID, routePlot))
+                #print "Plot Route with Expected demand "+str(routeCost)
+                #print str(map(lambda c: c.ID, routePlot))
                 
                 #print "\n"
     
