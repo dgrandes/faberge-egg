@@ -179,7 +179,7 @@ def generateProblems(customerSets, vehicleQty, expectedDemand, routeFailure):
 
 def setup(inputFile):
 
-    vehicleQty = 8
+    vehicleQty = 1
     routeFailures = [0.75,1.25,1.75]
     expectedDemand = 3
 
@@ -194,7 +194,7 @@ def setup(inputFile):
         customerSets = customerSets[problemNumber:problemNumber+1]    
     
     #Problems are generated with basic paramenters
-    problems = generateProblems(customerSets, vehicleQty, expectedDemand, routeFailures[2])
+    problems = generateProblems(customerSets, vehicleQty, expectedDemand, routeFailures[0])
     
 
     return problems
