@@ -263,7 +263,7 @@ def main(argv):
         #pp.pprint(p)
         for f in p.clusters[:]:
             for v in f.vehicles[:]:
-                cust = v.customers[0:1]+v.customers[-4:]
+                cust = v.customers[:]
                 #print cust
                 print "Route"
                 print str(map(lambda c: c.ID, cust))
