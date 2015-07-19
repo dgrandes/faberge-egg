@@ -39,9 +39,9 @@ def parseParameters(argv):
     return inputfile, outputfile
 
 #GO NO GO
-def expLenWithChoice(accumCost, vehicle, routeGiven, Q, d):
+def expLenWithChoice(accumCost, vehicleGiven, routeGiven, Q, d):
     route = routeGiven[:]
-
+    vehicle = pycopy(vehicleGiven)
     if len(route) == 0:
         return accumCost
 
@@ -51,7 +51,6 @@ def expLenWithChoice(accumCost, vehicle, routeGiven, Q, d):
     if currentNode.ID == 0:
         vehicle.currQ = Q
 
-    
 
     distanceToAdd = distCustomers(vehicle.currPos, currentNode)
     distanceToDepot = distCustomers(vehicle.currPos, route[-1])
@@ -59,12 +58,11 @@ def expLenWithChoice(accumCost, vehicle, routeGiven, Q, d):
     if distCustomers(vehicle.currPos, currentNode) == 0:
         #advance the algo
         route.pop(0)
-        expLenWithChoice(accumCost, vehicle, route, Q, d)
+        return expLenWithChoice(accumCost, vehicle, route, Q, d)
 
-    print "VEHICLE -> "+str(vehicle.currPos.ID)+",NEXT NODE -> "+str(route[0].ID)+", COST -> "+str(accumCost)
-    #Updating Accum Cost to reaching the new node
-    accumCost = accumCost + distanceToAdd
 
+    print "VEHICLE -> "+str(vehicle.currPos.ID)+",CURRENT NODE -> "+str(currentNode.ID)+", NEXT NODE -> "+str(route[0].ID)+", COST -> "+str(accumCost)
+    
     #Moving the vehicle to the next node
     vehicle.currPos = currentNode
 
@@ -73,8 +71,6 @@ def expLenWithChoice(accumCost, vehicle, routeGiven, Q, d):
     
     #print "distance to depot "+str(distanceToDepot)
     #print "v "+str(vehicle.currPos) + " route"+str(route)
-    
-    
 
     withDepotCost = float("inf")
     withoutDepotCost = float("inf")
@@ -90,22 +86,35 @@ def expLenWithChoice(accumCost, vehicle, routeGiven, Q, d):
 
         #If we go to the depot, the cost needs to include the trip and the vehicle now has Q
         vehicleCopy = pycopy(vehicle)
-        updatedCost = accumCost + 2 * distanceToDepot
+        updatedCost = accumCost + distanceToDepot + distCustomers(currentNode, route[-1])
+        #print "ACCUM COST: "+str(accumCost)
+        #print "DISTANCE DEPOT: "+str(distanceToDepot)
+        #print "NEW ACCUM: "+str(updatedCost)
         vehicleCopy.currQ = Q
-        print "GO TO DEPOT BEFORE: "+str(route[0].ID)
+        print "********"
+        print "---8--> GO TO DEPOT BEFORE: "+str(route[0].ID) + ", CURRENT:"+str(currentNode.ID)+", WITH Q:"+str(vehicle.currQ)+", COST:"+str(accumCost)
         withDepotCost = analyzeExpectedCostForAllDemand(updatedCost, vehicleCopy, route, Q, d)
-        print "!!!! END OF GOING TO DEPOT AT:" +str(currentNode.ID)
+        print "<--8--- END OF GOING TO DEPOT BEFORE:"+str(route[0].ID) +", CURRENT: "+str(currentNode.ID)+", WITH Q:"+str(vehicle.currQ)+", COST:"+str(accumCost)
+        print "********"
         print "\n"
+    
+    #Updating Accum Cost to reaching the new node
+    accumCost = accumCost + distanceToAdd
+
     #I can always go straight
     if(len(route) > 1 ):
-        print "NO GO TO DEPOT BEFORE: "+str(route[0].ID)
+        print "******"
+        print "----> STRAIGHT TO: "+str(route[0].ID)+" with Q:"+str(vehicle.currQ)+", COST:"+str(accumCost)
+    
     withoutDepotCost = analyzeExpectedCostForAllDemand(accumCost, vehicle, route, Q, d)
+    
     if(len(route) > 1 ):
-        print "!!!! END OF NO GO TO DEPOT AT: "+str(currentNode.ID)
+        print "*******"
+        print "<---- END OF STRAIGHT TO: "+str(currentNode.ID)+" with Q:"+str(vehicle.currQ)+", COST:"+str(accumCost)
         print "\n"
      
-    if(len(route) > 1 ):
-        print "AT :"+str(currentNode.ID)+", CHOOSE BETWEEN :"+str(withDepotCost)+" vs "+str(withoutDepotCost)
+    if(len(route) >= 0 ):
+        print "AT :"+str(currentNode.ID)+", CHOOSE BETWEEN :"+str(withDepotCost)+" vs "+str(withoutDepotCost)+", WITH Q:"+str(vehicle.currQ)+", COST:"+str(accumCost)
         print "\n"
     #Choose between Go, Not GO
     minCost = min(withDepotCost, withoutDepotCost)
@@ -129,18 +138,18 @@ def analyzeExpectedCostForAllDemand(accumCost, vehicle, routeGiven, Q, d):
 
     #If the current Node is the depot, then we just return the cost of getting here
     if currentNode.ID == 0:
-        return accumCost + distCustomers(vehicle.currPos, route[-1])
+        finalCost = accumCost + distCustomers(vehicle.currPos, route[-1])
+        #print "FINAL COST:"+str(finalCost)
+        return finalCost
 
-    if currentNode.ID != 0 and (currentNode.ID,vehicle.currQ, len(route)) in d:
+    if (currentNode.ID,vehicle.currQ, accumCost) in d:
 
-        result = d[currentNode.ID, vehicle.currQ, len(route)]
-        #print "Cache [ID:"+str(currentNode.ID)+", Q:"+str(vehicle.currQ)+"] -> "+str(result)
+        result = d[currentNode.ID, vehicle.currQ, accumCost]
+        print "Cache [ID:"+str(currentNode.ID)+", Q:"+str(vehicle.currQ)+", cost:"+str(accumCost)+"] -> "+str(result)
         return result
 
     #Costs for different Demands
     costsForAllDemands = []
-
-
 
     #Generate the demands in an array demands
     if currentNode.ID != 0:
@@ -150,7 +159,7 @@ def analyzeExpectedCostForAllDemand(accumCost, vehicle, routeGiven, Q, d):
 
     
     for demand in demands:
-        print "----> EXPANDING:"+str(currentNode.ID) +", DEMAND: "+str(demand)+ ", COST: "+str(accumCost)
+        #print "----> EXPANDING:"+str(currentNode.ID) +", DEMAND: "+str(demand)+ ", COST: "+str(accumCost)
         #Generate a vehicle per demand just in case
         vehicleCopy = pycopy(vehicle)
 
@@ -175,6 +184,7 @@ def analyzeExpectedCostForAllDemand(accumCost, vehicle, routeGiven, Q, d):
             #update the Q of the vehicle
             vehicleCopy.currQ = vehicleCopy.currQ - demand
 
+        #print "*******GOING TO EXPLEN with COST:" +str(accumCostAuxi)+" and Route:"+str(routeGiven) 
         #Updated Q and Cost, we proceed to the next node, deciding of course to visit the depot beforehand or not
         subCost = expLenWithChoice(accumCostAuxi, 
                     vehicleCopy, routeGiven, Q, d)    
@@ -186,9 +196,9 @@ def analyzeExpectedCostForAllDemand(accumCost, vehicle, routeGiven, Q, d):
     #The expected cost for all our demands is the average.
     expectedCost = sum(costsForAllDemands)/len(costsForAllDemands)
 
-    if currentNode.ID != 0:
-        #Store the end result in the dictionary for further use
-        d[(currentNode.ID, vehicle.currQ, len(route))] = expectedCost
+    
+    #Store the end result in the dictionary for further use
+    d[(currentNode.ID, vehicle.currQ, accumCost)] = expectedCost
     
     return expectedCost
 
@@ -250,17 +260,17 @@ def main(argv):
 
     #Solve them!
     for p in problems[:]:
-        pp.pprint(p)
+        #pp.pprint(p)
         for f in p.clusters[:]:
             for v in f.vehicles[:]:
                 cust = v.customers[0:1]+v.customers[-4:]
-                print cust
+                #print cust
                 print "Route"
                 print str(map(lambda c: c.ID, cust))
-                print p.Q
+                #print p.Q
                 d = {}
                 expLen = expLenWithChoice(0,v,list(cust), p.Q,{})
-                print d
+                #print d
                 print "Expected Length Result "+str(expLen)
                 print "\n"
                 d = {}
@@ -273,12 +283,6 @@ def main(argv):
     
     plotProblems(problems)
 
-def main2(argv):
-    vehicle = createVehicleWithRouteOfClients([(1,(1,0),[2,4]),(2,(2,0),[2,4])])
-    Q = 5
-    expLen = expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
-    print expLen
-    #assert expLen == 2.0
 
 
 if __name__ == "__main__":

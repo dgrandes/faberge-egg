@@ -42,3 +42,21 @@ def test_3_client_route_with_route_failure_just_like_2():
 	Q = 5
 	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
 	assert expLen - 11.33333 < 0.001
+
+def test_1_node_excercise_6():
+	vehicle = createVehicleWithRouteOfClients([(1,(0.28,0.97),[1,3])])
+	Q = 5 
+	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	assert expLen - 2.01920776544 < 0.00000001
+
+def test_2_nodes_excercise_6():
+	vehicle = createVehicleWithRouteOfClients([(3,(0.52,0.55),[3,5]),(1,(0.28,0.97),[1,3])])
+	Q = 5 
+	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	assert expLen - 3.32977734256 < 0.00000001
+
+def test_3_nodes_excercise_6():
+	vehicle = createVehicleWithRouteOfClients([(2,(0.7,0.4),[3,5]),(3,(0.52,0.55),[3,5]),(1,(0.28,0.97),[1,3])])
+	Q = 5 
+	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	assert expLen - 4.63796108951 < 0.00000001

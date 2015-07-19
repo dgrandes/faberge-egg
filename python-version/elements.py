@@ -18,7 +18,7 @@ class Customer:
 
   def __repr__(self):
     coords = "("+str(self.xCoor)+","+str(self.yCoor)+"), angle: "+str(self.angle)
-    return "Cust["+str(self.ID) +"]: dem:"+str(self.dem)
+    return "("+str(self.ID) +"):["+str(self.dem)+"]"+coords
 
 class Demand:
   def __init__(self, dmax, dmin):
