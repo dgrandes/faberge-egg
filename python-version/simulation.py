@@ -38,8 +38,43 @@ def parseParameters(argv):
         sys.exit(2)
     return inputfile, outputfile
 
-#Calculates the route expected cost by averaging all possibilities of demand in each node
 def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
+    route = routeGiven[:]
+
+    if len(route) == 0:
+        return accumCost
+
+    currentNode = route.pop(0)
+    withDepotCost = float("inf")
+    withoutDepotCost = float("inf")
+
+    distance = distCustomers(vehicle.currPos, currentNode)
+    
+    #If the result is in d, we use it instead of generating it again
+    if currentNode.ID != 0 and (currentNode.ID,vehicle.currQ, len(route)) in d:
+        result = d[currentNode.ID, vehicle.currQ, len(route)]
+        return result
+
+
+    vehicleCopy = pycopy(vehicle)
+    vehicleCopy.currPos = currentNode
+        
+
+    if (len(route) > 1):
+        routeWithDepot = [route[-1]]+route[:]
+        withDepotCost = expectedRouteLengthCalc(accumCost+distance, 
+            vehicleCopy, routeWithDepot, Q, d)
+
+    withoutDepotCost = expectedRouteLengthCalc(accumCost + distance,
+        vehicleCopy, route, Q, d)
+
+    minCost = min(withDepotCost, withoutDepotCost)
+
+    return minCost
+        
+                     
+#Calculates the route expected cost by averaging all possibilities of demand in each node
+def expectedRouteLengthCalc(accumCost, vehicle, routeGiven, Q, d):
     
     route = routeGiven[:]
 
@@ -54,7 +89,7 @@ def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
     
     #If the result is in d, we use it instead of generating it again
     if currentNode.ID != 0 and (currentNode.ID,vehicle.currQ, len(route)) in d:
-        #sys.stdout.write("Node result from cache: %d   \r" % (globalCounter) )
+        #sys.stdout.write("Node result from cache: %d   \r" % (globalCounter) ) 
         #sys.stdout.flush()
 
         result = d[currentNode.ID, vehicle.currQ, len(route)]
@@ -70,7 +105,7 @@ def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
 
 
     for demand in demGenerator:
-        #print ">>>--- NODE "+str(currentNode.ID)+", DEMAND:"+str(demand)+", Q:"+str(vehicle.currQ)+", Accum COST:"+str(accumCost)+" Route to go:"+str(route)
+        print ">>>--- NODE "+str(currentNode.ID)+", DEMAND:"+str(demand)+", Q:"+str(vehicle.currQ)+", Accum COST:"+str(accumCost+distance)+" Route to go:"+str(route)
         #Necessary in order to prevent the curpos to modify the original vehicle
         
         vehicleCopy = pycopy(vehicle)
@@ -86,25 +121,37 @@ def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
             if vehicleCopy.currQ < demand:
                 
                 
-                vehicleCopy.currQ = vehicleCopy.currQ - demand
+                #We substact the full amount, go negative and then assume we want back to the depot
+                vehicleCopy.currQ = vehicleCopy.currQ - demand + Q
+                #We add the cost of going to the depot and coming back
+                #print "ACCUM COST RIGHT NOW: " + str(accumCost + distance)
+                #print "DIST TO ADD "+str(distCustomers(vehicleCopy.currPos,routeCopy[-1]))
+                accumCostAuxi = accumCost + 2 * distCustomers(vehicleCopy.currPos,routeCopy[-1])
+                #print "ACCUM COST AFTER RUPUTRA: " + str(accumCost + distance)
+                #We set the current demand of the node in 0 as it is done.
                 currentNodeCopy = pycopy(currentNode)
                 currentNodeCopy.dem = Demand(0,0)
-                #We set this node's demand in 0 as we have given him everything and went negative
-                routeWithDepot = [routeCopy[-1],currentNodeCopy]+routeCopy[:]
-                withDepotCost = expectedRouteLength(accumCost + distance, 
-                    vehicleCopy, routeWithDepot, Q, d)    
+                
+                
+                withoutDepotCost = expectedRouteLength(accumCostAuxi + distance, 
+                    vehicleCopy, routeCopy, Q, d)    
             #We can evaluate both cases now, going to the depot or not
             else:        
                 #We offload the truck!
                 vehicleCopy.currQ = vehicleCopy.currQ - demand
                 
-                routeWithDepot = [routeCopy[-1]]+routeCopy[:]
+                if len(routeCopy) > 1:
+                    routeWithDepot = [routeCopy[-1]]+routeCopy[:]
+                else:
+                    routeWithDepot = routeCopy[:]
                 
                 withoutDepotCost = expectedRouteLength(accumCost + distance,
                  vehicleCopy, routeCopy, Q, d)
                 
+                #if (len(routeCopy) > 1):
+                 #   print "***********YENDO AL DEPOSITO con RUTA "+str(routeWithDepot)+"*************"
                 withDepotCost = expectedRouteLength(accumCost + distance,
-                 vehicleCopy, routeWithDepot, Q, d)    
+                    vehicleCopy, routeWithDepot, Q, d)    
             
         #Depot, we just go to the next node after loading the truck
         elif currentNode.ID == 0:
@@ -118,10 +165,10 @@ def expectedRouteLength(accumCost, vehicle, routeGiven, Q, d):
 
         costs.append(minCost)
         
-        #print "              NODE "+str(currentNode.ID)+", DEMAND:"+str(demand)+", With Depot Cost: "+str(withDepotCost)+", withoutDepotCost:"+str(withoutDepotCost)+", Q:"+str(vehicleCopy.currQ)
+    print "??????NODE "+str(currentNode.ID)+", DEMAND:"+str(demand)+", With Depot Cost: "+str(withDepotCost)+", withoutDepotCost:"+str(withoutDepotCost)+", Q:"+str(vehicleCopy.currQ)
 
-    #print "<<<----- NODE "+str(currentNode.ID)+", COSTS"+str(costs)
-    #print "\n"
+    print "<<<----- NODE "+str(currentNode.ID)+", COSTS"+str(costs)
+    print "\n"
 
     expectedCost = sum(costs)/len(costs)
     if currentNode.ID != 0:
@@ -236,6 +283,22 @@ def plotProblems(problems):
         fig.savefig("results/"+titleString+".png")
         i = i + 1
 
+def createVehicleWithRouteOfClients(clients):
+    customers = []
+    
+    depot = Customer(0,0,0,Demand(0,0))
+    
+    customers.append(depot)
+    
+    for r in clients:
+        customers.append(Customer(
+            r[0],r[1][0],r[1][1],Demand(r[2][1],r[2][0])))
+
+    customers.append(depot)
+    #print customers
+    v = Vehicle(0, customers, 0, customers[0])
+    return v
+
 def main(argv):
     
     #Parse comamnd line parameters
@@ -246,16 +309,17 @@ def main(argv):
 
     #Solve them!
     for p in problems[:]:
-        #pp.pprint(p)
+        pp.pprint(p)
         for f in p.clusters[:]:
             for v in f.vehicles[:]:
-                cust = v.customers[:]
-                #print cust
-                #print "Route"
-                #print str(map(lambda c: c.ID, cust))
+                cust = v.customers[0:1]+v.customers[-4:]
+                print cust
+                print "Route"
+                print str(map(lambda c: c.ID, cust))
+                print p.Q
                 d = {}
                 expLen = expectedRouteLength(0,v,list(cust), p.Q,{})
-                #print d
+                print d
                 print "Expected Length Result "+str(expLen)
                 print "\n"
                 d = {}
@@ -267,6 +331,7 @@ def main(argv):
                 #print "\n"
     
     plotProblems(problems)
+
 
 
 if __name__ == "__main__":

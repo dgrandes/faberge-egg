@@ -25,20 +25,20 @@ def test_1_client_route_with_demand_below_Q():
 	expLen = simSim.expectedRouteLength(0, vehicle, vehicle.customers, Q, {})
 	assert expLen == 2.0
 
-def test_1_client_route_with_demand_above_Q():
+def test_1_client_route_with_1_demand_above_Q():
 	vehicle = createVehicleWithRouteOfClients([(1,(1,0),[3,6])])
 	Q = 5
 	expLen = simSim.expectedRouteLength(0, vehicle, vehicle.customers, Q, {})
 	assert expLen == 2.5
 
-def test_1_client_route_with_demand_above_Q():
-	vehicle = createVehicleWithRouteOfClients([(1,(1,0),[6,8])])
+def test_2_client_route_with_route_failure():
+	vehicle = createVehicleWithRouteOfClients([(1,(1,0),[2,4]),(2,(2,0),[2,4])])
 	Q = 5
 	expLen = simSim.expectedRouteLength(0, vehicle, vehicle.customers, Q, {})
-	assert expLen == 4.0
+	assert expLen - 5.77777 < 0.001
 
-def test_2_client_route_with_demand_below_Q():
-	vehicle = createVehicleWithRouteOfClients([(1,(1,0),[2,5]),(2,(2,0),[2,5])])
-	Q = 8
+def test_3_client_route_with_route_failure_just_like_2():
+	vehicle = createVehicleWithRouteOfClients([(1,(1,0),[3,5]),(2,(2,0),[3,5]),(3,(3,0),[1,3])])
+	Q = 5
 	expLen = simSim.expectedRouteLength(0, vehicle, vehicle.customers, Q, {})
-	assert expLen == 2.0
+	assert expLen - 11.33333 < 0.001
