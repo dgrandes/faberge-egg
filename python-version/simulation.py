@@ -14,6 +14,7 @@ from math import sin, cos
 def dbp(string):
     if False:
         print string
+
 pp = pprint.PrettyPrinter(indent=2)
 
 def parseParameters(argv):
@@ -69,14 +70,9 @@ def expLenWithChoice(accumCost, vehicleGiven, routeGiven, Q, d):
     #Moving the vehicle to the next node
     vehicle.currPos = currentNode
 
-    #The Distance to Depot is the same as the distance to add if we are out of nodes
-
-    
-    #print "distance to depot "+str(distanceToDepot)
-    #print "v "+str(vehicle.currPos) + " route"+str(route)
-
     withDepotCost = float("inf")
     withoutDepotCost = float("inf")
+
     #If the next node is the depot, or I'm at the depot, then it makes no sense
     #to think about going there
 
@@ -90,9 +86,7 @@ def expLenWithChoice(accumCost, vehicleGiven, routeGiven, Q, d):
         #If we go to the depot, the cost needs to include the trip and the vehicle now has Q
         vehicleCopy = pycopy(vehicle)
         updatedCost = accumCost + distanceToDepot + distCustomers(currentNode, route[-1])
-        #print "ACCUM COST: "+str(accumCost)
-        #print "DISTANCE DEPOT: "+str(distanceToDepot)
-        #print "NEW ACCUM: "+str(updatedCost)
+        
         vehicleCopy.currQ = Q
         dbp("********")
         dbp("---8--> GO TO DEPOT BEFORE: "+str(route[0].ID) + ", CURRENT:"+str(currentNode.ID)+", WITH Q:"+str(vehicle.currQ)+", COST:"+str(accumCost))
@@ -121,8 +115,6 @@ def expLenWithChoice(accumCost, vehicleGiven, routeGiven, Q, d):
         dbp("\n")
     #Choose between Go, Not GO
     minCost = min(withDepotCost, withoutDepotCost)
-
-#    d[(currentNode.ID, vehicle.currQ, len(route))] = minCost
 
     return minCost
         
