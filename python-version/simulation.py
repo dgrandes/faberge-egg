@@ -11,6 +11,9 @@ import scipy as sp
 from math import sin, cos
 
 
+def dbp(string):
+    if False:
+        print string
 pp = pprint.PrettyPrinter(indent=2)
 
 def parseParameters(argv):
@@ -61,7 +64,7 @@ def expLenWithChoice(accumCost, vehicleGiven, routeGiven, Q, d):
         return expLenWithChoice(accumCost, vehicle, route, Q, d)
 
 
-    print "VEHICLE -> "+str(vehicle.currPos.ID)+",CURRENT NODE -> "+str(currentNode.ID)+", NEXT NODE -> "+str(route[0].ID)+", COST -> "+str(accumCost)
+    dbp("VEHICLE -> "+str(vehicle.currPos.ID)+",CURRENT NODE -> "+str(currentNode.ID)+", NEXT NODE -> "+str(route[0].ID)+", COST -> "+str(accumCost))
     
     #Moving the vehicle to the next node
     vehicle.currPos = currentNode
@@ -91,31 +94,31 @@ def expLenWithChoice(accumCost, vehicleGiven, routeGiven, Q, d):
         #print "DISTANCE DEPOT: "+str(distanceToDepot)
         #print "NEW ACCUM: "+str(updatedCost)
         vehicleCopy.currQ = Q
-        print "********"
-        print "---8--> GO TO DEPOT BEFORE: "+str(route[0].ID) + ", CURRENT:"+str(currentNode.ID)+", WITH Q:"+str(vehicle.currQ)+", COST:"+str(accumCost)
+        dbp("********")
+        dbp("---8--> GO TO DEPOT BEFORE: "+str(route[0].ID) + ", CURRENT:"+str(currentNode.ID)+", WITH Q:"+str(vehicle.currQ)+", COST:"+str(accumCost))
         withDepotCost = analyzeExpectedCostForAllDemand(updatedCost, vehicleCopy, route, Q, d)
-        print "<--8--- END OF GOING TO DEPOT BEFORE:"+str(route[0].ID) +", CURRENT: "+str(currentNode.ID)+", WITH Q:"+str(vehicle.currQ)+", COST:"+str(accumCost)
-        print "********"
-        print "\n"
+        dbp("<--8--- END OF GOING TO DEPOT BEFORE:"+str(route[0].ID) +", CURRENT: "+str(currentNode.ID)+", WITH Q:"+str(vehicle.currQ)+", COST:"+str(accumCost))
+        dbp("********")
+        dbp("\n")
     
     #Updating Accum Cost to reaching the new node
     accumCost = accumCost + distanceToAdd
 
     #I can always go straight
     if(len(route) > 1 ):
-        print "******"
-        print "----> STRAIGHT TO: "+str(route[0].ID)+" with Q:"+str(vehicle.currQ)+", COST:"+str(accumCost)
+        dbp("******")
+        dbp("----> STRAIGHT TO: "+str(route[0].ID)+" with Q:"+str(vehicle.currQ)+", COST:"+str(accumCost))
     
     withoutDepotCost = analyzeExpectedCostForAllDemand(accumCost, vehicle, route, Q, d)
     
     if(len(route) > 1 ):
-        print "*******"
-        print "<---- END OF STRAIGHT TO: "+str(currentNode.ID)+" with Q:"+str(vehicle.currQ)+", COST:"+str(accumCost)
-        print "\n"
+        dbp("*******")
+        dbp("<---- END OF STRAIGHT TO: "+str(currentNode.ID)+" with Q:"+str(vehicle.currQ)+", COST:"+str(accumCost))
+        dbp("\n")
      
     if(len(route) >= 0 ):
-        print "AT :"+str(currentNode.ID)+", CHOOSE BETWEEN :"+str(withDepotCost)+" vs "+str(withoutDepotCost)+", WITH Q:"+str(vehicle.currQ)+", COST:"+str(accumCost)
-        print "\n"
+        dbp("AT :"+str(currentNode.ID)+", CHOOSE BETWEEN :"+str(withDepotCost)+" vs "+str(withoutDepotCost)+", WITH Q:"+str(vehicle.currQ)+", COST:"+str(accumCost))
+        dbp("\n")
     #Choose between Go, Not GO
     minCost = min(withDepotCost, withoutDepotCost)
 
@@ -145,7 +148,7 @@ def analyzeExpectedCostForAllDemand(accumCost, vehicle, routeGiven, Q, d):
     if (currentNode.ID,vehicle.currQ, accumCost) in d:
 
         result = d[currentNode.ID, vehicle.currQ, accumCost]
-        print "Cache [ID:"+str(currentNode.ID)+", Q:"+str(vehicle.currQ)+", cost:"+str(accumCost)+"] -> "+str(result)
+        dbp("Cache [ID:"+str(currentNode.ID)+", Q:"+str(vehicle.currQ)+", cost:"+str(accumCost)+"] -> "+str(result))
         return result
 
     #Costs for different Demands
@@ -174,7 +177,7 @@ def analyzeExpectedCostForAllDemand(accumCost, vehicle, routeGiven, Q, d):
 
         #Assess if we fail and need to return to the depot and back
         if vehicleCopy.currQ < demand:
-            print "FAILURE :"+str(vehicle.currQ) + " < "+str(demand)
+            dbp("FAILURE :"+str(vehicle.currQ) + " < "+str(demand))
             #The vehicle goes to the depot, and comes back and unloads the remaining part
             vehicleCopy.currQ = vehicleCopy.currQ - demand + Q
             #Update the accumulated cost due to failure
@@ -192,7 +195,7 @@ def analyzeExpectedCostForAllDemand(accumCost, vehicle, routeGiven, Q, d):
         #Eventually, we will have known all the costs for each of our demands! We add them app to costs
         costsForAllDemands.append(subCost)
         
-    print "---->NODE:"+str(currentNode)+" EXPECTED COSTS:"+str(costsForAllDemands)
+    dbp("---->NODE:"+str(currentNode)+" EXPECTED COSTS:"+str(costsForAllDemands))
     #The expected cost for all our demands is the average.
     expectedCost = sum(costsForAllDemands)/len(costsForAllDemands)
 
