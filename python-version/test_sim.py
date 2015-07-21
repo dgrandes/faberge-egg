@@ -60,3 +60,10 @@ def test_3_nodes_excercise_6():
 	Q = 5 
 	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
 	assert expLen - 4.63796108951 < 0.00000001
+
+def test_4_nodes_excercise_6():
+	vehicle = createVehicleWithRouteOfClients([(5, (0.71, 0.27),[3,5]),(2,(0.7,0.4),[3,5]),(3,(0.52,0.55),[3,5]),(1,(0.28,0.97),[1,3])])
+	Q = 5 
+	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	assert expLen - 5.96971931052 < 0.00000001
+
