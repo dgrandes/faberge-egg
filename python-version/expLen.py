@@ -2,6 +2,26 @@ from setup import *
 from copy import copy as pycopy
 
 
+def aprioriRoute(vehicle, route, Q):	
+	
+	result = []
+	depot = route[-1]
+	
+	for node in route:
+		if node.ID == depot.ID:
+			vehicle.currQ = Q
+			result.append(depot)
+		else:
+			if vehicle.currQ >= node.dem.exp_dem:
+				vehicle.currQ = vehicle.currQ - node.dem.exp_dem
+				result.append(node)
+			else:
+				vehicle.currQ = Q
+				result.append(depot)
+				result.append(node)
+	return result
+
+
 #GO NO GO
 def expLenWithChoice(accumCost, vehicleGiven, routeGiven, Q, d):
     route = routeGiven[:]

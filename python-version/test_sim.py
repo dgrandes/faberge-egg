@@ -66,3 +66,21 @@ def test_4_nodes_excercise_6():
 	Q = 5 
 	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
 	assert abs(expLen - 5.96971931052) < 0.00000001
+
+def test_1_node_apriori():
+	v = createVehicleWithRouteOfClients([(1, (1,0),[3,5])])
+	Q = 5
+	result = simSim.aprioriRoute(v, v.customers, Q)
+	assert len(result) == 3
+
+def test_2_node_apriori():
+	v = createVehicleWithRouteOfClients([(1, (1,0),[3,5]), (2, (2,0),[3,5])])
+	Q = 10
+	result = simSim.aprioriRoute(v, v.customers, Q)
+	assert len(result) == 4
+
+def test_2_node_apriori_with_failure():
+	v = createVehicleWithRouteOfClients([(1, (1,0),[3,5]), (2, (2,0),[3,5])])
+	Q = 5
+	result = simSim.aprioriRoute(v, v.customers, Q)
+	assert len(result) == 5

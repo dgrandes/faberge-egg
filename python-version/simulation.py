@@ -58,12 +58,7 @@ def main(argv):
                 print "Expected Length Result "+str(expLen)
                 print "\n"
                 d = {}
-                #routeCost, routePlot = plotRouteWithExpectedDemand(0,v,list(cust), p.Q, [], d)
-                #pp.pprint(d)
-                #print "Plot Route with Expected demand "+str(routeCost)
-                #print str(map(lambda c: c.ID, routePlot))
-                
-                #print "\n"
+
     
     plotProblems(problems)
 
