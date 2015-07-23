@@ -22,49 +22,49 @@ def createVehicleWithRouteOfClients(clients):
 def test_1_client_route_with_demand_below_Q():
 	vehicle = createVehicleWithRouteOfClients([(1,(1,0),[2,5])])
 	Q = 8
-	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	expLen = simSim.expLenCost(0, vehicle, vehicle.customers, Q, {})
 	assert abs(expLen == 2.0)
 
 def test_1_client_route_with_1_demand_above_Q():
 	vehicle = createVehicleWithRouteOfClients([(1,(1,0),[3,6])])
 	Q = 5
-	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	expLen = simSim.expLenCost(0, vehicle, vehicle.customers, Q, {})
 	assert abs(expLen == 2.5)
 
 def test_2_client_route_with_route_failure():
 	vehicle = createVehicleWithRouteOfClients([(1,(1,0),[2,4]),(2,(2,0),[2,4])])
 	Q = 5
-	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	expLen = simSim.expLenCost(0, vehicle, vehicle.customers, Q, {})
 	assert abs(expLen - 5.77777) < 0.001
 
 def test_3_client_route_with_route_failure_just_like_2():
 	vehicle = createVehicleWithRouteOfClients([(1,(1,0),[3,5]),(2,(2,0),[3,5]),(3,(3,0),[1,3])])
 	Q = 5
-	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	expLen = simSim.expLenCost(0, vehicle, vehicle.customers, Q, {})
 	assert abs(expLen - 11.11111111111) < 0.001
 
 def test_1_node_excercise_6():
 	vehicle = createVehicleWithRouteOfClients([(1,(0.28,0.97),[1,3])])
 	Q = 5 
-	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	expLen = simSim.expLenCost(0, vehicle, vehicle.customers, Q, {})
 	assert abs(expLen - 2.01920776544) < 0.00000001
 
 def test_2_nodes_excercise_6():
 	vehicle = createVehicleWithRouteOfClients([(3,(0.52,0.55),[3,5]),(1,(0.28,0.97),[1,3])])
 	Q = 5 
-	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	expLen = simSim.expLenCost(0, vehicle, vehicle.customers, Q, {})
 	assert abs(expLen - 3.32977734256) < 0.00000001
 
 def test_3_nodes_excercise_6():
 	vehicle = createVehicleWithRouteOfClients([(2,(0.7,0.4),[3,5]),(3,(0.52,0.55),[3,5]),(1,(0.28,0.97),[1,3])])
 	Q = 5 
-	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	expLen = simSim.expLenCost(0, vehicle, vehicle.customers, Q, {})
 	assert abs(expLen - 4.63796108951) < 0.00000001
 
 def test_4_nodes_excercise_6():
 	vehicle = createVehicleWithRouteOfClients([(5, (0.71, 0.27),[3,5]),(2,(0.7,0.4),[3,5]),(3,(0.52,0.55),[3,5]),(1,(0.28,0.97),[1,3])])
 	Q = 5 
-	expLen = simSim.expLenWithChoice(0, vehicle, vehicle.customers, Q, {})
+	expLen = simSim.expLenCost(0, vehicle, vehicle.customers, Q, {})
 	assert abs(expLen - 5.96971931052) < 0.00000001
 
 def test_1_node_apriori():

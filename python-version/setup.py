@@ -179,7 +179,7 @@ def generateProblems(customerSets, vehicleQty, expectedDemand, routeFailure):
 
 def setup(inputFile):
 
-    vehicleQty = 1
+    vehicleQty = 2
     routeFailures = [0.75,1.25,1.75]
     expectedDemand = 3
 
@@ -187,7 +187,7 @@ def setup(inputFile):
     problemNumber = None
 
     #Read inputfile and generate customers
-    customerSets = parseCustomerSets(inputFile)[0:1]
+    customerSets = parseCustomerSets(inputFile)
 
     if problemNumber is not None:
         #Reduce the amount of problems to deal with if specified

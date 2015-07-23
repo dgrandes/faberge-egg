@@ -6,7 +6,7 @@ def aprioriRoute(vehicle, route, Q):
 	
 	result = []
 	depot = route[-1]
-	
+
 	for node in route:
 		if node.ID == depot.ID:
 			vehicle.currQ = Q
@@ -22,8 +22,8 @@ def aprioriRoute(vehicle, route, Q):
 	return result
 
 
-#GO NO GO
-def expLenWithChoice(accumCost, vehicleGiven, routeGiven, Q, d):
+def expLen(accumCost, vehicleGiven, routeGiven, Q, d):
+
     route = routeGiven[:]
     vehicle = pycopy(vehicleGiven)
     if len(route) == 0:
@@ -35,7 +35,7 @@ def expLenWithChoice(accumCost, vehicleGiven, routeGiven, Q, d):
     if vehicle.currPos.ID == nextNode.ID:
         #advance the algo
         route.pop(0)
-        return expLenWithChoice(accumCost, vehicle, route, Q, d)
+        return expLen(accumCost, vehicle, route, Q, d)
 
     #If the vehicle is in the depot, load it up
     if vehicle.currPos.ID == 0:
@@ -43,7 +43,24 @@ def expLenWithChoice(accumCost, vehicleGiven, routeGiven, Q, d):
 
     withDepotCost = goToDepot(vehicle, nextNode, accumCost, route, Q, d)        
     withoutDepotCost = goStraight(vehicle, nextNode, accumCost, route, Q, d)
-    
+    return (withDepotCost, withoutDepotCost)
+
+def expLenChoice(accumCost, vehicleGiven, routeGiven, Q, d):
+	t = expLen(accumCost, vehicleGiven, routeGiven, Q, d)
+	withDepotCost = t[0]
+	withoutDepotCost = t[1]
+
+	if withDepotCost < withoutDepotCost:
+		return routeGiven[-1]
+	else:
+		return routeGiven[0]
+
+#GO NO GO
+def expLenCost(accumCost, vehicleGiven, routeGiven, Q, d):
+
+    t = expLen(accumCost, vehicleGiven, routeGiven, Q, d)
+    withDepotCost = t[0]
+    withoutDepotCost = t[1]
     #Choose between Go, Not GO
     minCost = min(withDepotCost, withoutDepotCost)
 
@@ -141,4 +158,4 @@ def satisfyDemand(demand, vehicle, accumCost, route, Q, d):
         #update the Q of the vehicle
         vehicleCopy.currQ = vehicleCopy.currQ - demand
     
-    return expLenWithChoice(accumCost, vehicleCopy, route, Q, d)    
+    return expLenCost(accumCost, vehicleCopy, route, Q, d)    

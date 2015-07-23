@@ -33,6 +33,35 @@ def parseParameters(argv):
         sys.exit(2)
     return inputfile, outputfile
 
+def simulate(problem):
+    for f in problem.clusters[:]:
+        print str(f)
+        aprioriRoutes = []
+        for v in f.vehicles[:]:
+            apriori = aprioriRoute(v, v.customers, problem.Q)
+            
+            print str(map(lambda c: c.ID, apriori))
+            aprioriRoutes.append(apriori)
+            cust = v.customers[:]
+            #print cust
+            print "Route"
+            print str(map(lambda c: c.ID, cust))
+
+            # expLenRoute = []
+            # for i in len(cust):
+            #     decision = expLenChoice(0, v, cust[i:], problem.Q, {})
+            #     expLenRoute.append(e)
+            # decision = expLenChoice(
+            # print "decision :"+str(decision)
+
+            #print p.Q
+            d = {}
+            expLen = expLenCost(0,v,list(cust), problem.Q,{})
+            #print d
+            print "Expected Length Result "+str(expLen)
+            print "\n"
+            d = {}
+
 
 def main(argv):
     
@@ -45,20 +74,7 @@ def main(argv):
     #Solve them!
     for p in problems[:]:
         #pp.pprint(p)
-        for f in p.clusters[:]:
-            for v in f.vehicles[:]:
-                cust = v.customers[:]
-                #print cust
-                print "Route"
-                print str(map(lambda c: c.ID, cust))
-                #print p.Q
-                d = {}
-                expLen = expLenWithChoice(0,v,list(cust), p.Q,{})
-                #print d
-                print "Expected Length Result "+str(expLen)
-                print "\n"
-                d = {}
-
+        simulate(p)
     
     plotProblems(problems)
 
