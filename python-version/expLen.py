@@ -1,6 +1,13 @@
 from setup import *
 from copy import copy as pycopy
 
+def lengthForRoute(route):
+	length = 0
+	previousNode = route[0]
+	for node in route:
+		length = length + distCustomers(previousNode, node)
+		previousNode = node
+	return length
 
 def aprioriRoute(vehicle, route, Q):	
 	

@@ -39,8 +39,11 @@ def simulate(problem):
         aprioriRoutes = []
         for v in f.vehicles[:]:
             apriori = aprioriRoute(v, v.customers, problem.Q)
+            lengthApriori = lengthForRoute(apriori)
             
             print str(map(lambda c: c.ID, apriori))
+            print lengthApriori
+
             aprioriRoutes.append(apriori)
             cust = v.customers[:]
             #print cust
