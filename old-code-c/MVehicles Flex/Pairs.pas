@@ -1,9 +1,11 @@
 unit Pairs;
 
+{$MODE Delphi}
+
 interface
 
 uses
-  Sysutils, customers, vehicles, Math;
+  Sysutils, Customers, Vehicles, Math;
 
   type
   Pair = Class
@@ -13,7 +15,7 @@ uses
   pve : vearray;
   pline: customer;
 
-  published
+  public
     constructor Create(ID:integer; ve:vearray; line:customer);
     property ID: integer read pID write pID;
     property ve: vearray read pve write pve;
@@ -29,7 +31,7 @@ uses
   pve : vearray;
   pline : custarray;
 
-  published
+  public
     constructor Create(ve:vearray; line:custarray);
     property ve: vearray read pve write pve;
     property line: custarray read pline write pline;

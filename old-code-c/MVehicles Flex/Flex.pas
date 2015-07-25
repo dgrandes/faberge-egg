@@ -1,9 +1,11 @@
 unit Flex;
 
+{$MODE Delphi}
+
 interface
 
 uses
-  Sysutils, Customers, pairs,vehicles, math, subroutines, expectedlen, typez;
+  Sysutils, Customers, Pairs,Vehicles, math, Subroutines, ExpectedLen, Typez;
 
     procedure clock_counter(var pa:pair);
     function cost(load:integer;pos:customer;line:customer):real;

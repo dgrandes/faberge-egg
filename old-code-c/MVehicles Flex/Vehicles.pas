@@ -1,9 +1,11 @@
 unit Vehicles;
 
+{$MODE Delphi}
+
 interface
 
 uses
-SysUtils, customers, Typez;
+SysUtils, Customers, Typez;
 
 type
 vehicle = class
@@ -14,7 +16,7 @@ pcusts : custarray;
 pcq:integer;
 pcp:customer;
 
-  published
+  public
     property ID:integer read pID write pID;
     property custs : custarray read pcusts write pcusts;
     property cq: integer read pcq write pcq;

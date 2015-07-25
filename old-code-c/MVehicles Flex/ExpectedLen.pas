@@ -1,5 +1,7 @@
 unit ExpectedLen;
 
+{$MODE Delphi}
+
 interface
 
   uses
@@ -40,7 +42,7 @@ n1:integer;
 go_ng: rearray;
 
 begin
-  //Writeln('Calling with cq='+inttostr(cq)+' and i='+inttostr(i));
+ // Writeln('Calling with cq='+inttostr(cq)+' and i='+inttostr(i));
   n1:= length(seq);
   setlength(go_ng,2);
   if elen[cq,i]=0 then
@@ -75,19 +77,20 @@ begin
 
     for j:= seq[i+1].dem.dmin to seq[i+1].dem.dmax do
     begin
+//      Writeln('J is'+inttostr(j));
       if j<= cq then
           begin
             //Not exceeding capacity in next stop
-           // Writeln('nexc while i='+inttostr(i)+' and j='+inttostr(j));
+          // Writeln('nexc while i='+inttostr(i)+' and j='+inttostr(j));
           nexc:=nexc +exp_length(seq,cq-j,i+1)*prob(seq[i+1],j);
           end
           else
             //Exceeding capacity in next stop
           begin
-            //Writeln('exc while i='+inttostr(i)+' and j='+inttostr(j));
+         //   Writeln('exc while i='+inttostr(i)+' and j='+inttostr(j)+' and cq='+inttostr(cq));
             exc:=exc +prob(seq[i+1],j)*(2*dist[0,seq[i+1].ID]+exp_length(seq,q+cq-j,i+1));
           end;
-      //Writeln('tps while i='+inttostr(i)+' and j='+inttostr(j));
+  //    Writeln('tps while i='+inttostr(i)+' and j='+inttostr(j)+' and cq='+inttostr(cq));
       tps:=tps+exp_length(seq,Q-j,i+1)*prob(seq[i+1],j);
     end;
     //If I don't go to the depot before next stop

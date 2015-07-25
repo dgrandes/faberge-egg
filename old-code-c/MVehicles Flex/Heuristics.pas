@@ -1,5 +1,7 @@
 unit Heuristics;
 
+{$MODE Delphi}
+
   interface
 
   uses

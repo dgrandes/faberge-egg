@@ -1,10 +1,12 @@
 unit TrioSim;
 
+{$MODE Delphi}
+
 interface
 
 uses
-SysUtils, math, expectedlen, Classes, Customers, Demands,
-  Pairs,flex, Subroutines, Vehicles, States, Typez, Rollout;
+SysUtils, math, ExpectedLen, Classes, Customers, Demands,
+  Pairs,Flex, Subroutines, Vehicles, States, Typez, Rollout;
 
   function simulatet(var tr : trio):ccustarray;
   function updtet(var tr:trio; cstate:state; nnode:customer; d:boolean;i:integer):state;

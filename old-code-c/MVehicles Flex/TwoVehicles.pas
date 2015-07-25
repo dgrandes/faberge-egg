@@ -1,9 +1,11 @@
 unit TwoVehicles;
 
+{$MODE Delphi}
+
 interface
 
  uses
- sysUtils, typez, vehicles, customers,subroutines, math, pairs;
+ sysUtils, Typez, Vehicles, Customers,Subroutines, math, Pairs;
 
   procedure clustering(clist:custarray);
   function angle(clist:custarray):polararray;
@@ -86,6 +88,7 @@ begin
       begin
         setlength(aux[j], length(aux[j])+1);
         aux[j][length(aux[j])-1]:=poarr[i].cust;
+        Writeln('i is '+inttostr(i));
         cap:=cap + exp_dem(poarr[i].cust);
         li[j]:=poarr[i].cust;
         i:=i+1;
@@ -214,6 +217,7 @@ end;
 
 function exp_dem(cu:customer): real;
 begin
+    // Writeln('customer is'+inttostr(cu.dem.dmax));
   result:=(cu.dem.dmax+cu.dem.dmin)/2;
 end;
 

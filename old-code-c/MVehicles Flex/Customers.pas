@@ -1,5 +1,7 @@
 unit Customers;
 
+{$MODE Delphi}
+
 interface
 
 uses SysUtils, Demands;
@@ -13,7 +15,7 @@ type
      pycoor : real;
      pdem : demand;
 
-     published
+     public
      constructor Create(pID:integer; pxcoor, pycoor :real; pdem:demand);
      property ID : integer read pID write pID;
      property xcoor : real read pxcoor write pxcoor;

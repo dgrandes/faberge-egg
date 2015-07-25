@@ -1,0 +1,53 @@
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\MVehiclesF.dpr *
+Hint: Added defines -dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL in custom options
+Hint: Found all unit files
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\MVehiclesF.dpr *
+Hint: 
+Hint: *** Converting unit files belonging to project/package ***
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Customers.pas *
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Demands.pas *
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\ExpectedLen.pas *
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Heuristics.pas *
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Rollout.pas *
+Hint: Fixed character case of unit "expectedlen" to "ExpectedLen".
+Hint: Fixed character case of unit "flex" to "Flex".
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\States.pas *
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Subroutines.pas *
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Typez.pas *
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Vehicles.pas *
+Hint: Fixed character case of unit "customers" to "Customers".
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\TwoVehicles.pas *
+Hint: Fixed character case of unit "typez" to "Typez".
+Hint: Fixed character case of unit "vehicles" to "Vehicles".
+Hint: Fixed character case of unit "customers" to "Customers".
+Hint: Fixed character case of unit "subroutines" to "Subroutines".
+Hint: Fixed character case of unit "pairs" to "Pairs".
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Pairs.pas *
+Hint: Fixed character case of unit "customers" to "Customers".
+Hint: Fixed character case of unit "vehicles" to "Vehicles".
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Flex.pas *
+Hint: Fixed character case of unit "pairs" to "Pairs".
+Hint: Fixed character case of unit "vehicles" to "Vehicles".
+Hint: Fixed character case of unit "subroutines" to "Subroutines".
+Hint: Fixed character case of unit "expectedlen" to "ExpectedLen".
+Hint: Fixed character case of unit "typez" to "Typez".
+Hint: * Converting file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\TrioSim.pas *
+Hint: Fixed character case of unit "expectedlen" to "ExpectedLen".
+Hint: Fixed character case of unit "flex" to "Flex".
+Hint: 
+Hint: *** Fixing used units and Repairing form files ***
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Customers.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Demands.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\ExpectedLen.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Heuristics.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Rollout.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\States.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Subroutines.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Typez.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Vehicles.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\TwoVehicles.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Pairs.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\Flex.pas *
+Hint: * Fixing used units for file C:\Users\dgrandes\Documents\GitHub\faberge-egg\old-code-c\MVehicles Flex\TrioSim.pas *
+Hint: Conversion took: 00:00:13
+Hint: Conversion Ready.

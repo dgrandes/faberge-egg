@@ -1,10 +1,13 @@
 unit Subroutines;
 
 
+{$MODE Delphi}
+
+
 interface
 
   uses
-  SysUtils, Classes, Customers, Demands, Vehicles, States, Typez;
+  SysUtils, Math, Classes, Customers, Demands, Vehicles, States, Typez;
   procedure load_cust(mydataname: string);
   function dist_calc(cust : custarray) : realarray;
   function seq_length(seq: custarray): real;
@@ -23,7 +26,7 @@ implementation
 procedure load_cust(mydataname: string);
 
 var
-index,i,j : integer;
+index,i,j,maxDemand : integer;
 xcoor, ycoor : real;
 dem : demand;
 tyype : integer;
@@ -35,10 +38,10 @@ mydata : textfile;
 
 begin
 
-a:=6;     //Num of case within the file
+a:=1;     //Num of case within the file
 b:=0.75;
 ed:=3;
-
+maxDemand:=0;
 assignfile(mydata, mydataname);
 Reset(mydata);
 
@@ -77,6 +80,10 @@ begin
     1: dem := demand.create(4,2);
     2: dem := demand.create(5,3);
   end;
+  if dem.dmax > maxDemand then
+  begin
+     maxDemand := dem.dmax
+  end;
 
   cust[index]:= customer.create(index, xcoor, ycoor, dem);
   WriteLn('Customer '+inttostr(cust[index].ID) +' is located at '+ floattostr(xcoor)+
@@ -86,7 +93,9 @@ begin
 end;
 
 n:=j+1;
-Q:=round(ed*(n-1)/(v*(b+1)));
+Q:=max(round(ed*(n-1)/(v*(b+1))),maxDemand);
+
+Writeln('max demand is '+inttostr(maxDemand));
 Writeln('The capacity of the vehicle(s) is '+floattostr(q)+' units');
 
 setlength(cust,n);

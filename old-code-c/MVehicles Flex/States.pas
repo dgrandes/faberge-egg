@@ -1,5 +1,7 @@
 unit States;
 
+{$MODE Delphi}
+
 interface
 
 uses SysUtils, Customers, Typez;
@@ -12,7 +14,7 @@ type
      pdems : intarray;
      pcu_cap : integer;
 
-     published
+     public
      constructor Create(pcu_pos:customer; pcu_cap: integer);
      property cu_pos : customer read pcu_pos write pcu_pos;
      property dems : intarray read pdems write pdems;

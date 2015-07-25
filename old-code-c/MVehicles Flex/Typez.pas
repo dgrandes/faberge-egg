@@ -1,5 +1,7 @@
 unit Typez;
 
+{$MODE Delphi}
+
 interface
 
 uses

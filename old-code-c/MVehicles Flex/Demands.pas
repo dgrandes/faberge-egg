@@ -1,5 +1,7 @@
 unit Demands;
 
+{$MODE Delphi}
+
 interface
 
 type
@@ -10,7 +12,7 @@ type
      pdmin : Integer;
      pnum : Integer;
 
-     published
+     public
      constructor Create(pdmax:integer; pdmin : integer);
      property dmax : integer read pdmax write pdmax;
      property dmin : integer read pdmin write pdmin;

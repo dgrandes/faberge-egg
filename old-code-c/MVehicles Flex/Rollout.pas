@@ -1,10 +1,12 @@
 unit Rollout;
 
+{$MODE Delphi}
+
 interface
 
 uses
-  SysUtils, math, expectedlen, Classes, Customers, Demands,
-  Pairs,flex, Subroutines, Vehicles, States, Typez;
+  SysUtils, math, ExpectedLen, Classes, Customers, Demands,
+  Pairs,Flex, Subroutines, Vehicles, States, Typez;
   function simulate(var pa:pair):ccustarray;
   function firstnode(seq:custarray;l:customer;var ec:real):custarray;
   function updte(var pe:pair; cstate:state; nnode:customer; d:boolean;i:integer):state;
