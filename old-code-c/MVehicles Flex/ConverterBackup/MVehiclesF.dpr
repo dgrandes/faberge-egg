@@ -89,7 +89,7 @@ begin
   Writeln(myresults, ' ');
   for z := 0 to 100 - 1 do
   begin
-    Randomize;
+//    Randomize;
     gen_demand(cust);
 
   for j := 0 to length(vlist)-1 do

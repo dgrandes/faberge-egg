@@ -8,7 +8,7 @@ uses
   Sysutils, Customers, Pairs,Vehicles, math, Subroutines, ExpectedLen, Typez;
 
     procedure clock_counter(var pa:pair);
-    function cost(load:integer;pos:customer;line:customer):real;
+    function cost(load:integer;pos:customer;line:customer;delta:real):real;
     function expcos(seq:custarray; cq, i:integer;l:customer):real;
     procedure ini_cos(n1:integer);
     function exp_cost(seq:custarray; cq, i:integer;l:customer):real;
@@ -54,11 +54,11 @@ begin
     begin
       go_ng:=cgo_notgo(seq,cq,i,l);
      //Best decision
-      cos[cq,i]:= min(go_ng[0],go_ng[1])+cost(cq,seq[i],l);
+      cos[cq,i]:= min(go_ng[0],go_ng[1])+cost(cq,seq[i],l, delta);
     end
     else
     begin
-      cos[cq,i]:=dist[0,seq[n1-1].ID]+cost(cq,seq[n1-1],l);
+      cos[cq,i]:=dist[0,seq[n1-1].ID]+cost(cq,seq[n1-1],l, delta);
     end;
   end;
   result:=cos[cq,i];
@@ -149,12 +149,13 @@ begin
   end;
 end;
 
-function cost(load:integer;pos:customer;line:customer):real;
+function cost(load:integer;pos:customer;line:customer;delta:real):real;
 var
 d,per:real;
 begin
   per:= power((load/q),3)+0.000001;
   d:= pdis(line,pos);
+//  Writeln('delta!!!'+FloatToStr(delta));
    result:= delta*(1-2*per)*d;
 end;
 end.

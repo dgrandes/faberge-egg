@@ -22,7 +22,7 @@ uses
  var
  fseq:ccustarray;
  fs:intarray;
-
+ problem: integer;
 implementation
 
 function simulate(var pa:pair):ccustarray;
@@ -182,7 +182,7 @@ begin
 
     for j := 0 to length(seq) - 1 do
     begin
-      randomize;
+//      randomize;
       f:=random;
       dem[seq[j].ID]:=seq[j].dem.dmax;
       for I := seq[j].dem.num-1 downto 1 do

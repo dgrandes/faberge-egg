@@ -26,17 +26,28 @@ var
   seq1,seq2: custarray;
   d1, d2: real;
   i,j,k,z:integer;
-
+  pparam: string;
+  delta: real;
+  ntimes: integer;
+  problem: integer;
 
 begin
 
   try
-    v:=1;
-    delta:=1.1;
+    v:=2;
+//    delta:=1.1;
+    problem:= StrToInt(ParamStr(2));
+    delta:= StrToFloat(ParamStr(3));
+    ntimes:=StrToInt(ParamStr(4));
+    rootpath:=ParamStr(1);
 
+    Writeln('Problem: '+inttostr(problem));
+    Writeln('delta: '+floattostr(delta));
+    Writeln('ntimes: '+inttostr(ntimes));
+    Writeln('rootpath: '+rootpath);
 
     Writeln('Initializing..');
-    rootpath:='Instances\instance_6.txt';
+    //rootpath:='Instances\instance_7.txt';
     rootout:='results.txt';
 
     Writeln('Loading data..');
@@ -46,7 +57,7 @@ begin
     assignfile(myresults,rootout);
     Rewrite(myresults);
 
-    load_cust(rootpath);
+    load_cust(rootpath, problem);
     clustering(cust);
 
     dist := dist_calc(cust);
