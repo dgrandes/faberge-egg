@@ -30,26 +30,31 @@ var
   delta: real;
   ntimes: integer;
   problem: integer;
+  numberNodes: string;
+  FF: TFloatFormat;
 
 begin
 
   try
     v:=2;
 //    delta:=1.1;
+    numberNodes := ParamStr(1);
+    rootpath:='Instances\instance_'+numberNodes+'.txt';
+    Writeln(ParamStr(3));
     problem:= StrToInt(ParamStr(2));
     delta:= StrToFloat(ParamStr(3));
     ntimes:=StrToInt(ParamStr(4));
-    rootpath:=ParamStr(1);
+
 
     Writeln('Problem: '+inttostr(problem));
     Writeln('delta: '+floattostr(delta));
     Writeln('ntimes: '+inttostr(ntimes));
     Writeln('rootpath: '+rootpath);
-
+    FF:=ffFixed;
     Writeln('Initializing..');
     //rootpath:='Instances\instance_7.txt';
-    rootout:='results.txt';
-
+    rootout:= 'Results\'+numberNodes+'Nodes\'+inttostr(problem)+'\'+'delta_'+floattostrF(delta,FF,1,1)+'_results.txt';
+    Writeln(rootout);
     Writeln('Loading data..');
     Writeln('');
 
@@ -100,9 +105,10 @@ begin
   end;
 
   Writeln(myresults, ' ');
+  Randomize();
   for z := 0 to 100 - 1 do
   begin
-    Randomize;
+
     gen_demand(cust);
 
   for j := 0 to length(vlist)-1 do

@@ -85,11 +85,11 @@ begin
               +' proposed sequence is '+floattostr(di[i]));
     Writeln(' ');
   end;
-
+  Randomize();
   Writeln(myresults, ' ');
   for z := 0 to 100 - 1 do
   begin
-//    Randomize;
+
     gen_demand(cust);
 
   for j := 0 to length(vlist)-1 do

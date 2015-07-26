@@ -179,18 +179,20 @@ begin
     Writeln(' ');
     Writeln('Generating demand...');
     setlength(dem,n);
-
+    //randomize;
     for j := 0 to length(seq) - 1 do
     begin
-//      randomize;
+
       f:=random;
+
       dem[seq[j].ID]:=seq[j].dem.dmax;
       for I := seq[j].dem.num-1 downto 1 do
         if f<(i/seq[j].dem.num) then
         begin
           dem[seq[j].id]:=seq[j].dem.dmax - (seq[j].dem.num-i);
         end;
-    end;  
+    end;
+
     dems:=dem;
 end;
 
