@@ -106,7 +106,7 @@ begin
 
   Writeln(myresults, ' ');
   Randomize();
-  for z := 0 to 100 - 1 do
+  for z := 0 to ntimes - 1 do
   begin
 
     gen_demand(cust);

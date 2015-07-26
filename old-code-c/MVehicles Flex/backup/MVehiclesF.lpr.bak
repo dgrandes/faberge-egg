@@ -53,7 +53,7 @@ begin
     FF:=ffFixed;
     Writeln('Initializing..');
     //rootpath:='Instances\instance_7.txt';
-    rootout:= 'Results\'+numberNodes+'Nodes\'+inttostr(problem)+'\'+'delta_'+floattostrF(delta,FF,1,2)+'_results.txt';
+    rootout:= 'Results\'+numberNodes+'Nodes\'+inttostr(problem)+'\'+'delta_'+floattostrF(delta,FF,1,1)+'_results.txt';
     Writeln(rootout);
     Writeln('Loading data..');
     Writeln('');
