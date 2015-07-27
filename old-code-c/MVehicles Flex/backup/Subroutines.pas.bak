@@ -23,7 +23,7 @@ interface
 implementation
 
 
-procedure load_cust(mydataname: string, problem: integer);
+procedure load_cust(mydataname: string; problem: integer; failureRate:float);
 
 var
 index,i,j,maxDemand : integer;
@@ -40,7 +40,8 @@ begin
 
 a:= problem;     //Num of case within the file
 WriteLn('problem instance:'+inttostr(problem));
-b:=0.75;
+b:=failureRate;
+WriteLn('Failure Rate:'+FloatToStr(b));
 ed:=3;
 maxDemand:=0;
 assignfile(mydata, mydataname);

@@ -32,28 +32,33 @@ var
   problem: integer;
   numberNodes: string;
   FF: TFloatFormat;
+  failureRate: real;
 
 begin
 
   try
     v:=2;
 //    delta:=1.1;
+// #ARGS are name, number of nodes, problem instance,  failure rate, delta, ntimes
+//    args = ['MVehiclesF.exe', input, problem,  failure, delta, ntimes]
+
     numberNodes := ParamStr(1);
-    rootpath:='Instances\instance_'+numberNodes+'.txt';
-    Writeln(ParamStr(3));
     problem:= StrToInt(ParamStr(2));
-    delta:= StrToFloat(ParamStr(3));
-    ntimes:=StrToInt(ParamStr(4));
+    failureRate := StrToFloat(ParamStr(3));
+    delta:= StrToFloat(ParamStr(4));
+    ntimes:=StrToInt(ParamStr(5));
 
-
+    rootpath:='Instances\instance_'+numberNodes+'.txt';
+    Writeln('Instance: '+rootpath);
     Writeln('Problem: '+inttostr(problem));
+    Writeln('Failure: '+floattostr(failureRate));
     Writeln('delta: '+floattostr(delta));
     Writeln('ntimes: '+inttostr(ntimes));
     Writeln('rootpath: '+rootpath);
     FF:=ffFixed;
     Writeln('Initializing..');
     //rootpath:='Instances\instance_7.txt';
-    rootout:= 'Results\'+numberNodes+'Nodes\'+inttostr(problem)+'\'+'delta_'+floattostrF(delta,FF,1,1)+'_results.txt';
+    rootout:= 'Results\'+numberNodes+'Nodes\'+inttostr(problem)+'\failure_'+floattostr(failureRate)+'_delta_'+floattostrF(delta,FF,1,1)+'_results.txt';
     Writeln(rootout);
     Writeln('Loading data..');
     Writeln('');
@@ -62,7 +67,7 @@ begin
     assignfile(myresults,rootout);
     Rewrite(myresults);
 
-    load_cust(rootpath, problem);
+    load_cust(rootpath, problem, failureRate);
     clustering(cust);
 
     dist := dist_calc(cust);

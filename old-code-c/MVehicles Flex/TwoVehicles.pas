@@ -217,7 +217,6 @@ end;
 
 function exp_dem(cu:customer): real;
 begin
-    // Writeln('customer is'+inttostr(cu.dem.dmax));
   result:=(cu.dem.dmax+cu.dem.dmin)/2;
 end;
 

@@ -8,7 +8,7 @@ interface
 
   uses
   SysUtils, Math, Classes, Customers, Demands, Vehicles, States, Typez;
-  procedure load_cust(mydataname: string;problem: integer);
+  procedure load_cust(mydataname: string;problem: integer;failureRate:float);
   function dist_calc(cust : custarray) : realarray;
   function seq_length(seq: custarray): real;
   function sofar(seq:custarray):real;
@@ -23,7 +23,7 @@ interface
 implementation
 
 
-procedure load_cust(mydataname: string; problem: integer);
+procedure load_cust(mydataname: string; problem: integer; failureRate:float);
 
 var
 index,i,j,maxDemand : integer;
@@ -40,7 +40,8 @@ begin
 
 a:= problem;     //Num of case within the file
 WriteLn('problem instance:'+inttostr(problem));
-b:=0.75;
+b:=failureRate;
+WriteLn('Failure Rate:'+FloatToStr(b));
 ed:=3;
 maxDemand:=0;
 assignfile(mydata, mydataname);
